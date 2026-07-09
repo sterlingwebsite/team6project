@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-temple-journal`  
 **Created**: 2026-07-02  
-**Status**: Draft  
+**Status**: Ready for Implementation  
 **Input**: User description: Create a project specification for a Church of Jesus Christ Temples Journal app which will log and display the temple attendance of registered users, along with their spiritual insights and interesting temple facts. It will also include a ranking system where users can "like" specific temple facts to highlight them on a temple details page. Include: a project title and description, the purpose and target audience, user stories for core workflows (sign up, create, read, update, delete), acceptance criteria for each story, API endpoints, and implementation priority.
 
 ## Project Title
@@ -35,7 +35,6 @@ A new user can create an account and sign in to begin using the journal.
 **Independent Test**: A new user can register, verify their account, and access the dashboard without assistance.
 
 **Acceptance Scenarios**:
-
 1. **Given** a visitor is on the sign-up page, **When** they submit a valid registration form, **Then** an account is created and they are signed in.
 2. **Given** a user enters invalid sign-up information, **When** they submit the form, **Then** they receive clear validation feedback and the account is not created.
 
@@ -50,7 +49,6 @@ A registered user can create a journal entry for a temple visit with attendance 
 **Independent Test**: A user can create one complete entry that is saved and shown in their journal history.
 
 **Acceptance Scenarios**:
-
 1. **Given** a signed-in user is on the new entry form, **When** they enter temple information, date, and spiritual insights, **Then** the entry is saved to their account.
 2. **Given** a user leaves required fields empty, **When** they try to save the entry, **Then** the app prevents submission and explains what is missing.
 
@@ -65,7 +63,6 @@ A user can view their temple journal entries and review past temple attendance a
 **Independent Test**: A user can open their journal and see their saved entries in a readable list or detail view.
 
 **Acceptance Scenarios**:
-
 1. **Given** a user has existing journal entries, **When** they open their journal, **Then** they can see those entries ordered by date or recency.
 2. **Given** a user opens one entry, **When** they view the details, **Then** they can read the attendance information and spiritual insights.
 
@@ -80,7 +77,6 @@ A user can edit or remove their own entries when details change or a record shou
 **Independent Test**: A user can update an entry’s details or delete it without affecting other users’ records.
 
 **Acceptance Scenarios**:
-
 1. **Given** a user owns an existing entry, **When** they submit edits to the entry, **Then** the updated content is saved and displayed.
 2. **Given** a user chooses to delete an entry, **When** they confirm the action, **Then** the entry is removed from their journal and no longer appears in the app.
 
@@ -95,17 +91,14 @@ A user can browse temple facts and like the facts they find meaningful, which he
 **Independent Test**: A signed-in user can view temple facts and increase the ranking of a fact by liking it.
 
 **Acceptance Scenarios**:
-
 1. **Given** a user is viewing a temple details page, **When** they select a fact and like it, **Then** the fact’s like count increases.
 2. **Given** multiple liked facts, **When** the page is displayed, **Then** the highest-ranked facts are shown more prominently.
 
----
+## Resolution of Edge Cases
 
-### Edge Cases
-
-- What happens when a user tries to create an entry without required information?
-- What happens when a user tries to like the same fact more than once?
-- What happens when a user attempts to access another user’s private journal entry?
+- **Missing Required Information**: Frontend validations block submission. The backend API drops incomplete payloads with a `400 Bad Request` status code indicating the specific missing columns.
+- **Duplicate Likes**: A structural unique constraint on the database level prevents a `userId` from attaching more than one `Like` record to a specific `factId`. Attempting a double-like safely returns a `200 OK` but toggles the like off (unlike behavior) or returns a `409 Conflict`.
+- **Unauthorized Cross-User Data Access**: The server strictly validates token sessions. If a user queries `/api/journal/[id]` for a resource owned by another user ID, the backend acts as a shield, responding with a `403 Forbidden` status.
 
 ## Requirements
 
@@ -134,37 +127,9 @@ A user can browse temple facts and like the facts they find meaningful, which he
 - **GET /api/temples/[templeId]/facts** - Retrieve crowdsourced facts for a specific temple.
 - **POST /api/temples/[templeId]/facts/[factId]/like** - Increment and record a user like for a target fact.
 
-### Key Entities
+### Key Entities & Relations
 
 - **User**: A registered person who holds an account, authenticates, owns personal journal entries, and likes public facts.
-- **JournalEntry**: A private, user-created record tracking attendance date, temple ID, and personal spiritual insights.
-- **TempleFact**: A public, crowdsourced temple-related fact linked to a specific temple ID.
-- **Like**: A tracking entity mapping a specific User ID to a specific TempleFact ID to prevent multiple likes.
-
-## Success Criteria
-
-### Measurable Outcomes
-
-- **SC-001**: Users can successfully create and save a new temple journal entry in under 2 minutes.
-- **SC-002**: At least 95% of active users can complete the entire create, read, update, and delete workflow without experiencing runtime failures.
-- **SC-003**: The fact ranking engine correctly sorts and reorders liked facts on the details screen in under 500 milliseconds after a user triggers a like.
-
-## Implementation Priority
-
-### Phase 1 - Core Foundation
-
-- User authentication and account registration
-- Basic journal entry create, read, update, and delete workflows
-- Secure ownership and access control for user data
-
-### Phase 2 - Engagement Features
-
-- Temple facts display on temple details pages
-- Like and ranking functionality for temple facts
-- Prominent display of highly liked facts
-
-### Phase 3 - Polish and Expansion
-
-- Search or filtering for journal entries
-- Improved profile or history views
-- Additional temple-related content or community features
+- **JournalEntry**: A private, user-created record tracking attendance date, temple ID, and personal spiritual insights. (Belongs to one `User`).
+- **TempleFact**: A public, historical temple-related fact linked to a specific temple ID. (Can have many `Likes`).
+- **Like**: A tracking entity mapping a specific `User ID` to a specific `TempleFact ID` ensuring a single unique vote per user per fact.
