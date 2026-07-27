@@ -1,22 +1,15 @@
-import { NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const client = await clientPromise;
-    const db = client.db(process.env.MONGODB_DB);
+    const res = await fetch("https://www.templedb.org/api/temples");
+    const data = await res.json();
 
-    const temples = await db
-      .collection('temples')
-      .find({})
-      .sort({ name: 1 })
-      .toArray();
-
-    return NextResponse.json(temples);
+    return NextResponse.json(data.temples);
   } catch (error) {
-    console.error("Database connection route error:", error);
+    console.error("TempleDB fetch error:", error);
     return NextResponse.json(
-      { error: "Failed fetching temple records from the database." }, 
+      { error: "Failed fetching temple records from TempleDB." },
       { status: 500 }
     );
   }

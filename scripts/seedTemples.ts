@@ -21,6 +21,7 @@ export interface ITemple {
   state: string | null;
   country: string;
   phone: string | null;
+  imageUrl: string;
 }
 
 export function generateTempleSlug(name: string): string {
@@ -45,15 +46,19 @@ async function runSeed() {
 
     const records = parse(csvContent, {
       columns: true,
-        skip_empty_lines: true,
+      skip_empty_lines: true,
       relax_quotes: true,
     });
 
     const templesToUpload: ITemple[] = records.map((row: any) => {
       const name = row['Temple'] || '';
+      const slug = generateTempleSlug(name);
       
+      const churchAssetUrl = `https://churchofjesuschrist.org/${slug}-main.jpg`;
+      const templeDbProxyUrl = `https://templedb.org/${encodeURIComponent(churchAssetUrl)}`;
+
       return {
-        slug: generateTempleSlug(name),
+        slug: slug,
         name: name,
         status: row['Status'] || '',
         latitude: row['Latitude'] ? parseFloat(row['Latitude']) : null,
@@ -63,6 +68,7 @@ async function runSeed() {
         state: row['State'] || null,
         country: row['Country'] || '',
         phone: row['Phone'] || null,
+        imageUrl: templeDbProxyUrl,
       };
     }).filter((temple: ITemple) => temple.name !== '');
 
@@ -72,7 +78,7 @@ async function runSeed() {
 
     console.log(`\nDatabase Successfully Seeded!`);
     console.log(`Provisioned Database: "${DB_NAME}"`);
-    console.log(`Loaded ${uploadResult.insertedCount} temples directly into MongoDB.`);
+    console.log(`Loaded ${uploadResult.insertedCount} temples with integrated TempleDB image paths into MongoDB.`);
   } catch (error) {
     console.error("Database initialization crashed:", error);
   } finally {

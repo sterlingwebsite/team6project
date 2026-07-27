@@ -10,7 +10,16 @@ export interface ITemple {
   state: string | null;
   country: string;
   phone: string | null;
+  image?: {
+    full?: string;
+    thumb?: string;
+    caption?: string;
+    credit?: string;
+    subject?: string;
+    type?: string;
+  };
 }
+
 
 export function generateTempleSlug(name: string): string {
   return name
@@ -20,6 +29,15 @@ export function generateTempleSlug(name: string): string {
     .replace(/\s+/g, "-");
 }
 
-export function getTempleImageUrl(slug: string): string {
-  return `https://churchofjesuschrist.org{slug}/${slug}-main.jpg`;
-}
+// export function getTempleImageUrl(imagePath: string | undefined): string | null {
+//   if (!imagePath) {
+//     return null;
+//   }
+  
+//   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+//     return imagePath;
+//   }
+
+//   return `https://templedb.org/${imagePath}`;
+
+// }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ITemple, getTempleImageUrl } from '../utils/templeHelpers';
+import { ITemple } from '../utils/templeHelpers';
 
 interface TempleGridProps {
   initialTemples: ITemple[];
@@ -43,7 +43,7 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredTemples.map((temple) => {
-            const imageUrl = getTempleImageUrl(temple.slug);
+            const imageUrl = temple.image?.thumb || temple.image?.full;
 
             return (
               <a 
@@ -52,15 +52,33 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
                 className="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
-                    <img 
-                      src={imageUrl} 
-                      alt={temple.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://unsplash.com';
-                      }}
-                    />
+                  <div className="relative h-48 w-full bg-gray-50 overflow-hidden flex items-center justify-center">
+                    {imageUrl ? (
+                      <img 
+                        src={imageUrl} 
+                        alt={temple.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        onError={(e) => {
+                          const container = e.currentTarget.parentElement;
+                          if (container) {
+                            container.innerHTML = `
+                              <div class="flex flex-col items-center justify-center w-full h-full p-4 bg-gray-50 text-center">
+                                <span class="text-3xl mb-1 text-[#D4AF37]">🏛️</span>
+                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider px-2 line-clamp-2">${temple.name}</p>
+                              </div>
+                            `;
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center w-full h-full p-4 bg-gray-50 text-center">
+                        <span className="text-3xl mb-1 text-[#D4AF37]">🏛️</span>
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-2 line-clamp-2">
+                          {temple.name}
+                        </p>
+                      </div>
+                    )}
+                    
                     <span className={`absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full ${
                       temple.status === 'Dedicated' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
                     }`}>
@@ -86,6 +104,7 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
               </a>
             );
           })}
+
         </div>
       )}
     </div>
