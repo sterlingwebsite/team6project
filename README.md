@@ -49,3 +49,6 @@ Sterling Steele
 
 Project Description
 A temple‑focused journal app that records attendance, captures spiritual insights, and highlights popular temple facts through a community ranking system.
+
+Vercel Main Deployment link:
+https://team6project.vercel.app/
