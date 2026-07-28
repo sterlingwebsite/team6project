@@ -1,3 +1,15 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Home | Temple Journal",
+  description: "Welcome to the Temple Journal app. Record insights, track visits, and explore temples worldwide.",
+  openGraph: {
+    title: "Home | Temple Journal",
+    description: "A personal journal for recording temple experiences and insights.",
+    type: "website"
+  }
+};
+
 import Image from "next/image";
 
 export default function Home() {
