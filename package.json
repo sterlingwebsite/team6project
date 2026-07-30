@@ -11,10 +11,10 @@
     "db:seed": "ts-node scripts/seedTemples.ts"
   },
   "dependencies": {
-    "mongodb": "^6.21.0",
     "@auth/mongodb-adapter": "^3.11.3",
     "csv-parse": "^7.0.1",
     "dotenv": "^17.4.2",
+    "mongodb": "^6.21.0",
     "next": "16.2.10",
     "next-auth": "^4.24.15",
     "react": "19.2.4",
