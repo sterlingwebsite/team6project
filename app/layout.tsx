@@ -1,5 +1,8 @@
-import type { Metadata } from "next";
+'use client';
+
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { usePathname } from "next/navigation";
+import Header from "@/components/Header";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,25 +20,29 @@ const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: 'Sacred Spaces | Temple Journal',
-    template: '%s | Temple Journal'
-  },
-  description: 'Record spiritual insights, track personal milestones, and discover historical facts about temples.',
-};
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  const isPublicRoute = 
+    pathname === "/" || 
+    pathname?.startsWith("/auth/");
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full bg-[#FAFAFA] text-[#1A2530] flex flex-col font-sans">
+        {!isPublicRoute && <Header />}
+        
+        <div className="flex-grow flex flex-col w-full">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

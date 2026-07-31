@@ -1,14 +1,5 @@
 import { ObjectId } from 'mongodb';
 
-/**
- * JournalEntry data model — mirrors the spec entity:
- *   _id       ObjectId  (Primary Key, auto-generated)
- *   userId    ObjectId  (FK → User._id, set from session)
- *   templeId  ObjectId  (FK → Temple._id, required)
- *   visitDate Date      (required)
- *   insights  string    (required, min 1 char)
- *   createdAt Date      (auto-generated timestamp)
- */
 export interface JournalEntryDocument {
   _id?: ObjectId;
   userId: ObjectId;
@@ -18,24 +9,14 @@ export interface JournalEntryDocument {
   createdAt: Date;
 }
 
-/**
- * Shape of the validated request body coming from POST /api/journal.
- * All fields are strings from JSON; the route coerces them to the
- * correct types before persisting.
- */
 export interface JournalEntryInput {
   templeId: string;
-  visitDate: string; // ISO date string e.g. "2026-07-28"
+  visitDate: string;
   insights: string;
 }
 
-/** Minimum insight length (characters). */
 export const INSIGHTS_MIN_LENGTH = 1;
 
-/**
- * Validates a raw request body and returns a typed JournalEntryInput or
- * a non-empty FieldErrors object listing every invalid field.
- */
 export function validateJournalEntryInput(body: unknown): {
   data: JournalEntryInput | null;
   errors: Partial<Record<keyof JournalEntryInput, string>>;
@@ -53,14 +34,12 @@ export function validateJournalEntryInput(body: unknown): {
 
   const raw = body as Record<string, unknown>;
 
-  // --- templeId ---
   if (!raw.templeId || typeof raw.templeId !== 'string' || !raw.templeId.trim()) {
     errors.templeId = 'templeId is required.';
   } else if (!ObjectId.isValid(raw.templeId)) {
     errors.templeId = 'templeId must be a valid ObjectId.';
   }
 
-  // --- visitDate ---
   const todayStr = new Date().toISOString().split('T')[0];
   if (!raw.visitDate || typeof raw.visitDate !== 'string' || !raw.visitDate.trim()) {
     errors.visitDate = 'visitDate is required.';
@@ -73,7 +52,6 @@ export function validateJournalEntryInput(body: unknown): {
     }
   }
 
-  // --- insights ---
   if (
     !raw.insights ||
     typeof raw.insights !== 'string' ||

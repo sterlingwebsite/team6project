@@ -29,15 +29,3 @@ export function generateTempleSlug(name: string): string {
     .replace(/\s+/g, "-");
 }
 
-// export function getTempleImageUrl(imagePath: string | undefined): string | null {
-//   if (!imagePath) {
-//     return null;
-//   }
-  
-//   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
-//     return imagePath;
-//   }
-
-//   return `https://templedb.org/${imagePath}`;
-
-// }

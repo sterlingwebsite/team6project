@@ -11,7 +11,6 @@ export default function RegisterForm() {
 
       <form className="space-y-4">
 
-        {/* Username */}
         <div>
           <label
             htmlFor="username"
@@ -30,7 +29,6 @@ export default function RegisterForm() {
           />
         </div>
 
-        {/* Email */}
         <div>
           <label
             htmlFor="email"
@@ -49,7 +47,6 @@ export default function RegisterForm() {
           />
         </div>
 
-        {/* Password */}
         <div>
           <label
             htmlFor="password"
@@ -68,7 +65,6 @@ export default function RegisterForm() {
           />
         </div>
 
-        {/* Confirm Password */}
         <div>
           <label
             htmlFor="confirmPassword"
@@ -87,7 +83,6 @@ export default function RegisterForm() {
           />
         </div>
 
-        {/* Register Button */}
         <button
           type="submit"
           className="w-full rounded-md bg-green-600 py-2 text-white transition hover:bg-green-700"
