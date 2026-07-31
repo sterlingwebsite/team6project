@@ -10,7 +10,7 @@ export default function NavLinks() {
     { name: 'Dashboard', href: '/dashboard', icon: '📊' },
     { name: 'Temples', href: '/temples', icon: '🏛️' },
     { name: 'Journal', href: '/journal', icon: '✍️' },
-    { name: 'Facts', href: '/facts', icon: 'ℹ️' },
+    { name: 'Facts', href: '/facts', icon: '💡' },
   ];
 
   return (

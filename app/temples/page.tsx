@@ -1,3 +1,4 @@
+// app/temples/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -120,9 +121,6 @@ export default function TemplesPage() {
                         <h3 className="font-serif font-bold text-lg text-[#1A2530] line-clamp-1 group-hover:text-[#D4AF37] transition-colors">
                           {temple.name}
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {temple.city}{temple.state ? `, ${temple.state}` : ''}, {temple.country}
-                        </p>
                         
                         <p className="text-xs text-amber-600 font-medium italic mt-3 pt-2 border-t border-gray-100 line-clamp-2">
                           💡 Fact: "{temple.mostLikedFact || 'Explore historical community insights inside.'}"

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
+import { generateTempleSlug } from "@/utils/templeHelpers"; // 1. Add this import
 
 export async function GET(request: Request) {
   try {
@@ -20,23 +20,20 @@ export async function GET(request: Request) {
     }
 
     const data = await res.json();
-
     const rawTemples = data.temples || data.data || [];
-    const total =
-      data.total_count ||
-      data.total ||
-      data.pagination?.total ||
-      data.meta?.total ||
-      rawTemples.length;
+    const total = data.total_count || data.total || data.pagination?.total || data.meta?.total || rawTemples.length;
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
 
     const templesWithTopFacts = await Promise.all(
       rawTemples.map(async (temple: any) => {
+        // 2. Generate slug programmatically if it doesn't exist on templedb response
+        const fallbackSlug = temple.slug || generateTempleSlug(temple.name);
+        
         let topFact = "Explore historical community insights inside.";
         try {
-          const queryIdentifier = temple.slug || temple.id?.toString();
+          const queryIdentifier = fallbackSlug || temple.id?.toString();
           
           const bestFact = await db.collection("templeFacts")
             .find({ $or: [{ templeSlug: queryIdentifier }, { templeId: queryIdentifier }] })
@@ -53,6 +50,7 @@ export async function GET(request: Request) {
 
         return {
           ...temple,
+          slug: fallbackSlug, // 3. Ensure slug is explicitly populated on the frontend payload
           mostLikedFact: topFact
         };
       })

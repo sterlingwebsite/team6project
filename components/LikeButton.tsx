@@ -1,41 +1,52 @@
+// components/LikeButton.tsx
 "use client";
 
 import { useState } from "react";
 
 type LikeButtonProps = {
+  templeId: string;
   factId: string;
+  onLikeSuccess?: () => void;
 };
 
-export default function LikeButton({ factId }: LikeButtonProps) {
-  const [likes, setLikes] = useState(0);
-  const [liked, setLiked] = useState(false);
+export default function LikeButton({ templeId, factId, onLikeSuccess }: LikeButtonProps) {
+  const [isLiking, setIsLiking] = useState(false);
 
   async function handleLike() {
+    if (isLiking) return;
+    setIsLiking(true);
+    
     try {
+      // Replaced hardcoded "demo" with the dynamic templeId string variable
       const response = await fetch(
-        `/api/temples/demo/facts/${factId}/like`,
+        `/api/temples/${templeId}/facts/${factId}/like`,
         {
           method: "POST",
         }
       );
 
       if (response.ok) {
-        const data = await response.json();
-        setLikes(data.likesCount);
-        setLiked(true);
+        // Triggers the state reloader function inside your parent TempleFactCard component
+        if (onLikeSuccess) {
+          onLikeSuccess();
+        }
+      } else {
+        alert("Could not register your like submission.");
       }
     } catch (error) {
       console.error("Failed to like fact:", error);
+    } finally {
+      setIsLiking(false);
     }
   }
 
   return (
     <button
       onClick={handleLike}
-      disabled={liked}
-      className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white disabled:opacity-50"
+      disabled={isLiking}
+      className="rounded-md bg-amber-500 hover:bg-amber-600 px-3 py-1 text-xs font-semibold text-white transition-colors disabled:opacity-50"
     >
-      {liked ? `Liked (${likes})` : "Like"}
+      {isLiking ? "Liking..." : "👍 Like"}
     </button>
   );
 }

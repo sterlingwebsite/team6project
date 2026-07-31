@@ -1,3 +1,4 @@
+// utils/templeHelpers.ts
 export interface ITemple {
   _id?: string;
   slug: string;
