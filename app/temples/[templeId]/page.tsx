@@ -40,6 +40,7 @@ export default async function TemplePage({ params }: PageProps) {
         {facts.map((fact) => (
           <TempleFactCard
             key={fact.id}
+            templeId={templeId}
             fact={fact}
           />
         ))}
