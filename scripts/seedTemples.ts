@@ -3,7 +3,7 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, Document } from 'mongodb';
 import fs from 'fs';
 import { parse } from 'csv-parse/sync';
 
@@ -22,6 +22,18 @@ export interface ITemple {
   country: string;
   phone: string | null;
   imageUrl: string;
+}
+
+interface ICsvTempleRow {
+  Temple?: string;
+  Status?: string;
+  Latitude?: string;
+  Longitude?: string;
+  Address?: string;
+  City?: string;
+  State?: string;
+  Country?: string;
+  Phone?: string;
 }
 
 export function generateTempleSlug(name: string): string {
@@ -48,9 +60,9 @@ async function runSeed() {
       columns: true,
       skip_empty_lines: true,
       relax_quotes: true,
-    });
+    }) as ICsvTempleRow[];
 
-    const templesToUpload: ITemple[] = records.map((row: any) => {
+    const templesToUpload: ITemple[] = records.map((row: ICsvTempleRow) => {
       const name = row['Temple'] || '';
       const slug = generateTempleSlug(name);
       
@@ -74,7 +86,7 @@ async function runSeed() {
 
     await collection.deleteMany({});
     
-    const uploadResult = await collection.insertMany(templesToUpload as any);
+    const uploadResult = await collection.insertMany(templesToUpload as unknown as Document[]);
 
     console.log(`\nDatabase Successfully Seeded!`);
     console.log(`Provisioned Database: "${DB_NAME}"`);
