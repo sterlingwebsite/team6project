@@ -3,17 +3,21 @@
 import { useState } from "react";
 
 type LikeButtonProps = {
+  templeId: string;
   factId: string;
 };
 
-export default function LikeButton({ factId }: LikeButtonProps) {
+export default function LikeButton({
+  templeId,
+  factId,
+}: LikeButtonProps) {
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
 
   async function handleLike() {
     try {
       const response = await fetch(
-        `/api/temples/demo/facts/${factId}/like`,
+        `/api/temples/${templeId}/facts/${factId}/like`,
         {
           method: "POST",
         }
