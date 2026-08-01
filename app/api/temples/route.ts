@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { generateTempleSlug } from "@/utils/templeHelpers"; // 1. Add this import
+import { generateTempleSlug } from "@/utils/templeHelpers";
 
 export async function GET(request: Request) {
   try {
@@ -28,7 +28,6 @@ export async function GET(request: Request) {
 
     const templesWithTopFacts = await Promise.all(
       rawTemples.map(async (temple: any) => {
-        // 2. Generate slug programmatically if it doesn't exist on templedb response
         const fallbackSlug = temple.slug || generateTempleSlug(temple.name);
         
         let topFact = "Explore historical community insights inside.";
@@ -50,7 +49,7 @@ export async function GET(request: Request) {
 
         return {
           ...temple,
-          slug: fallbackSlug, // 3. Ensure slug is explicitly populated on the frontend payload
+          slug: fallbackSlug,
           mostLikedFact: topFact
         };
       })

@@ -10,32 +10,62 @@ export async function GET(
 
   try {
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db(process.env.MONGODB_DB || "team6project");
 
-    // 1. Log incoming parameter context to check what Next.js sees
-    console.log(`[API] Fetching temple record for slug token: "${templeId}"`);
-
-    // 2. Query checking standard schema patterns
-    let temple = await db.collection('temples').findOne({
+    const temple = await db.collection('temples').findOne({
       $or: [
         { slug: templeId },
         { id: templeId },
-        { name: { $regex: new RegExp(`^${templeId.replace(/-/g, ' ')}$`, 'i') } } // Fallback name check
+        { name: { $regex: new RegExp(`^${templeId.replace(/-/g, ' ')}$`, 'i') } }
       ]
     });
 
-    // 3. Fallback: If no match, inspect one document from the collection to debug the schema structures
-    if (!temple) {
-      console.warn(`[API] Exact match fail for "${templeId}". Inspecting collection keys...`);
-      const sampleDoc = await db.collection('temples').findOne({});
-      console.log("[API] Sample database document structure keys:", sampleDoc ? Object.keys(sampleDoc) : "Collection is completely empty!");
-    }
-
     if (!temple) {
       return NextResponse.json(
-        { error: `Temple profile matching "${templeId}" not found in database.` }, 
+        { error: `Temple profile matching "${templeId}" not found in database.` },
         { status: 404 }
       );
+    }
+
+    if (temple.imageUrl) {
+      try {
+        const decoded = decodeURIComponent(temple.imageUrl);
+        temple.imageUrl = decoded.replace(/^https:\/\/templedb\.org\//, "");
+      } catch {
+      }
+    }
+
+    try {
+      const cleanSearchTerm = templeId.replace(/-/g, ' ');
+      const remoteRes = await fetch(
+        `https://templedb.org/api/temples?search=${encodeURIComponent(cleanSearchTerm)}`
+      );
+
+      if (remoteRes.ok) {
+        const remoteData = await remoteRes.json();
+        const list = remoteData.temples || remoteData.data || [];
+
+        const remoteMatched =
+          list.find((t: any) => t.slug === templeId || t.id?.toString() === templeId) ||
+          list[0];
+
+        if (remoteMatched) {
+          if (remoteMatched.image) {
+            temple.image = remoteMatched.image;
+          }
+
+          if (remoteMatched.imageUrl) {
+            try {
+              const decoded = decodeURIComponent(remoteMatched.imageUrl);
+              temple.imageUrl = decoded.replace(/^https:\/\/templedb\.org\//, "");
+            } catch {
+              temple.imageUrl = remoteMatched.imageUrl;
+            }
+          }
+        }
+      }
+    } catch (fetchError) {
+      console.error("[API Warning] Remote TempleDB fetch failed:", fetchError);
     }
 
     return NextResponse.json(temple);

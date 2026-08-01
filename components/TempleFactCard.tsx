@@ -95,7 +95,6 @@ export default function TempleFactCard({ templeId }: TempleFactCardProps) {
     }
   };
 
-  // Callback to handle updates triggered inside the LikeButton component
   const handleLikeSuccess = () => {
     loadFacts();
   };

@@ -17,7 +17,6 @@ export default function LikeButton({ templeId, factId, onLikeSuccess }: LikeButt
     setIsLiking(true);
     
     try {
-      // Replaced hardcoded "demo" with the dynamic templeId string variable
       const response = await fetch(
         `/api/temples/${templeId}/facts/${factId}/like`,
         {
@@ -26,7 +25,6 @@ export default function LikeButton({ templeId, factId, onLikeSuccess }: LikeButt
       );
 
       if (response.ok) {
-        // Triggers the state reloader function inside your parent TempleFactCard component
         if (onLikeSuccess) {
           onLikeSuccess();
         }

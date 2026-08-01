@@ -213,9 +213,8 @@ A user can browse temple facts and like the facts they find meaningful, which he
 
 ### 3. Temple Directory Endpoints (Public Access)
 
-- **GET /api/temples** - Fetches a list of all temples (names, locations, images) for the directory.
-- **GET /api/temples/[templeId]** - Fetches core details and facts for a specific temple.
-- **PUT /api/temples/[templeId]** - Updates core temple metadata (Restricted: Admin Only).
+- **GET /api/temples** - Proxies live temple metadata and image objects directly from TempleDB.
+- **GET /api/temples/[templeId]** - Fetches live TempleDB metadata and dynamically merges it with local MongoDB data.
 
 ### 4. Crowdsourced Fact Endpoints (Requires User Authentication)
 
@@ -246,27 +245,40 @@ A user can browse temple facts and like the facts they find meaningful, which he
 
 - **\_id**: ObjectId (Primary Key)
 - **userId**: ObjectId (Foreign Key, references User._id, Required)
-- **templeId**: ObjectId (Foreign Key, references Temple._id, Required)
+- **templeSlug**: String (Foreign Key/Join Token, references Temple Reference slug, Required)
 - **visitDate**: Date (Required)
 - **insights**: String (Required)
 - **createdAt**: Date (Timestamp)
 
-#### Temple Entity
+#### 🕌 Temple Reference
 
-- A public record representing a physical temple location and its static metadata.
+- Represents a **lightweight pointer** to a temple record stored in **TempleDB**, the external authoritative dataset.
 
-- **\_id**: ObjectId (Primary Key)
-- **name**: String (Unique, Required)
-- **location**: String (Required, e.g., "Salt Lake City, Utah")
-- **imageUrl**: String (Required, URL path to CDN or asset folder)
-- **createdAt**: Date (Timestamp)
+- The service **does not store full temple metadata** (name, location, status, images).  
+  Instead, it stores only the minimal identifier needed to join or fetch that data.
+
+- **slug**  
+  - A unique, human‑readable identifier (e.g., `"aba-nigeria-temple"`).  
+  - Serves as the **primary route token** in the Next.js application.  
+  - Functions as the **join key** used to request full temple metadata from TempleDB.  
+  - Stable across all collections (JournalEntry, TempleFact, directory views).
+
+- TempleDB returns the full canonical temple object, including:
+  - **name**
+  - **status** (Announced, Under Construction, Dedicated, etc.)
+  - **image objects** (full, thumb, fallback)
+  - **location metadata**
+  - **other descriptive fields**
+
+- Your local database stores **only references**, never the full metadata.
+
 
 #### TempleFact Entity
 
 - A public, historical temple-related milestone or detail.
 
 - **\_id**: ObjectId (Primary Key)
-- **templeId**: ObjectId (Foreign Key, references Temple._id, Required)
+- **templeSlug**: String (Foreign Key/Join Token, references Temple Reference slug, Required)
 - **creatorId**: ObjectId (Foreign Key, references User._id, Required)
 - **factText**: String (Required)
 - **likesCount**: Number (Default: 0)

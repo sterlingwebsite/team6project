@@ -12,7 +12,6 @@ type PageProps = {
 export default function TempleDetailPage({ params }: PageProps) {
   const { templeId } = use(params);
 
-  // Core Data States
   const [temple, setTemple] = useState<any | null>(null);
   const [facts, setFacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,30 +21,26 @@ export default function TempleDetailPage({ params }: PageProps) {
   useEffect(() => {
     async function loadTempleAndFacts() {
       try {
-        // FIXED: Using your exact working dual-fetch architecture parameters
         const [directoryRes, factsRes] = await Promise.all([
-          fetch(`/api/temples?search=${encodeURIComponent(templeId)}`),
+          fetch(`/api/temples/${templeId}`),
           fetch(`/api/temples/${templeId}/facts`, { cache: 'no-store' })
         ]);
 
-        // JSON directory dataset exact match lookup block
         if (directoryRes.ok) {
-          const data = await directoryRes.json();
-          const temples = data.temples || data.data || [];
+          const matched = await directoryRes.json();
 
-          // Isolate exact record using your slug validator matching rule
-          const matched = temples.find((t: any) => t.slug === templeId) || temples[0];
+          console.log("Temple payload:", matched);
 
-          if (matched) {
+          if (matched && typeof matched === 'object' && !Array.isArray(matched)) {
             setTemple(matched);
           } else {
-            setError("Temple not found.");
+            setError("Temple data payload invalid.");
           }
         } else {
-          setError("Temple not found.");
+          const errData = await directoryRes.json().catch(() => ({}));
+          setError(errData.error || "Temple profile not found.");
         }
 
-        // Facts database collection lookup block (MongoDB)
         if (factsRes.ok) {
           const data = await factsRes.json();
           const factsArray = data.facts || data || [];
@@ -63,6 +58,19 @@ export default function TempleDetailPage({ params }: PageProps) {
     loadTempleAndFacts();
   }, [templeId]);
 
+  useEffect(() => {
+    if (temple) {
+      const resolved =
+        temple?.image?.thumb ||
+        temple?.image?.full ||
+        temple?.imageUrl ||
+        (typeof temple?.image === "string" ? temple.image : undefined);
+
+      console.log("Resolved heroImageUrl:", resolved);
+    }
+  }, [temple]);
+
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
@@ -71,12 +79,10 @@ export default function TempleDetailPage({ params }: PageProps) {
     );
   }
 
-  // Universal image path mapping — will resolve perfectly now that data pulls cleanly
-  const heroImageUrl = 
-    temple?.image?.full || 
-    temple?.image?.thumb || 
-    temple?.image || 
-    (temple?.images && temple.images?.url);
+  const rawImageUrl = temple?.imageUrl || temple?.image;
+
+const heroImageUrl = temple?.image?.thumb || temple?.image?.full || temple?.imageUrl;
+
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] p-6 md:p-12">
