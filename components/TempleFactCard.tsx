@@ -154,7 +154,6 @@ export default function TempleFactCard({ templeId }: TempleFactCardProps) {
 
                   <div className="flex items-center gap-4 text-xs font-semibold text-zinc-400 mt-2">
                     <div className="flex items-center gap-2">
-                      {/* Updated to pass templeId variable context directly downward */}
                       <LikeButton 
                         templeId={templeId} 
                         factId={fact._id} 

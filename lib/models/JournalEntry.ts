@@ -1,3 +1,4 @@
+// lib\models\JournalEntry.ts
 import { ObjectId } from 'mongodb';
 
 export interface JournalEntryDocument {
@@ -34,21 +35,22 @@ export function validateJournalEntryInput(body: unknown): {
 
   const raw = body as Record<string, unknown>;
 
-  if (!raw.templeId || typeof raw.templeId !== 'string' || !raw.templeId.trim()) {
-    errors.templeId = 'templeId is required.';
-  } else if (!ObjectId.isValid(raw.templeId)) {
-    errors.templeId = 'templeId must be a valid ObjectId.';
-  }
-
-  const todayStr = new Date().toISOString().split('T')[0];
   if (!raw.visitDate || typeof raw.visitDate !== 'string' || !raw.visitDate.trim()) {
     errors.visitDate = 'visitDate is required.';
   } else {
     const parsed = new Date(raw.visitDate);
     if (isNaN(parsed.getTime())) {
       errors.visitDate = 'visitDate must be a valid date.';
-    } else if (raw.visitDate > todayStr) {
-      errors.visitDate = 'visitDate cannot be in the future.';
+    } else {
+      const localToday = new Date();
+      const year = localToday.getFullYear();
+      const month = String(localToday.getMonth() + 1).padStart(2, '0');
+      const day = String(localToday.getDate()).padStart(2, '0');
+      const localTodayStr = `${year}-${month}-${day}`;
+
+      if (raw.visitDate > localTodayStr) {
+        errors.visitDate = 'visitDate cannot be in the future.';
+      }
     }
   }
 

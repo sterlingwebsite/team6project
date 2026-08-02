@@ -15,7 +15,13 @@ type FieldErrors = {
   insights?: string;
 };
 
-const today = () => new Date().toISOString().split("T")[0];
+const today = () => {
+  const localToday = new Date();
+  const year = localToday.getFullYear();
+  const month = String(localToday.getMonth() + 1).padStart(2, '0');
+  const day = String(localToday.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 export function NewJournalEntryForm() {
   const router = useRouter();
@@ -136,7 +142,7 @@ export function NewJournalEntryForm() {
             aria-describedby={
               fieldErrors.templeId ? "templeId-error" : undefined
             }
-            className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-[#1A2530] focus:border-[#D4AF37] focus:outline-none focus:ring-1 focus:ring-[#D4AF37] disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:outline-none focus:ring-1 focus:ring-[#9A7B1C] disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
           >
             <option value="" disabled>
               {templesStatus === "loading"
@@ -175,7 +181,7 @@ export function NewJournalEntryForm() {
           aria-describedby={
             fieldErrors.visitDate ? "visitDate-error" : undefined
           }
-          className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-[#1A2530] focus:border-[#D4AF37] focus:outline-none focus:ring-1 focus:ring-[#D4AF37] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:outline-none focus:ring-1 focus:ring-[#9A7B1C] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
         />
         {fieldErrors.visitDate && (
           <p id="visitDate-error" className="text-sm text-[#C62828]" role="alert">
@@ -202,7 +208,7 @@ export function NewJournalEntryForm() {
           aria-describedby={
             fieldErrors.insights ? "insights-error" : undefined
           }
-          className="resize-y rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-[#1A2530] focus:border-[#D4AF37] focus:outline-none focus:ring-1 focus:ring-[#D4AF37] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          className="resize-y rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:outline-none focus:ring-1 focus:ring-[#9A7B1C] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
         />
         {fieldErrors.insights && (
           <p id="insights-error" className="text-sm text-[#C62828]" role="alert">
@@ -221,14 +227,14 @@ export function NewJournalEntryForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-full bg-[#D4AF37] px-5 py-2 text-sm font-medium text-[#1A2530] transition-colors hover:bg-[#c4a132] disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-full bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] font-medium px-6 py-2 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? "Saving..." : "Save entry"}
         </button>
         <button
           type="button"
           onClick={() => router.push("/journal")}
-          className="text-sm font-medium text-[#1A2530] hover:underline dark:text-zinc-200"
+          className="text-sm font-medium text-[#1A2530] hover:underline dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#1A2530] rounded p-0.5"
         >
           Cancel
         </button>

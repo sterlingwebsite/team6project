@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -13,44 +12,51 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setValidationError(null);
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setValidationError(null);
 
-    if (!email.trim() || !password.trim()) {
-      setValidationError("Please fill out all mandatory credential fields.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email: email.trim().toLowerCase(),
-        password: password,
-      });
-
-      if (result?.error) {
-        throw new Error("Invalid email or password credentials supplied.");
+      if (!email.trim() || !password.trim()) {
+        setValidationError("Please fill out all mandatory credential fields.");
+        return;
       }
 
-      router.push("/dashboard");
-      router.refresh();
-    } catch (err: any) {
-      console.error("Login client sequence crash:", err);
-      setValidationError(err.message || "Authentication transmission failure. Please try again.");
-      setLoading(false);
-    }
-  };
+      setLoading(true);
+
+      try {
+        const res = await fetch("/api/auth/signin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email.trim().toLowerCase(),
+            password: password,
+          }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok || data.error) {
+          throw new Error(data.error || "Invalid email or password credentials supplied.");
+        }
+
+        router.push("/dashboard");
+        router.refresh();
+      } catch (err: any) {
+        console.error("Login client sequence details:", err);
+        setValidationError(err.message || "Authentication transmission failure. Please try again.");
+        setLoading(false);
+      }
+    };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {validationError && (
-        <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg text-xs font-medium text-center shadow-sm">
-          {validationError}
-        </div>
-      )}
+    <form onSubmit={handleSubmit} className="space-y-4 no-validate">
+      <div aria-live="assertive">
+        {validationError && (
+          <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg text-xs font-medium text-center shadow-sm">
+            {validationError}
+          </div>
+        )}
+      </div>
 
       <div>
         <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
@@ -59,11 +65,12 @@ export default function LoginForm() {
         <input
           id="email"
           type="email"
-          placeholder="username@example.com"
+          required
+          placeholder="sterling@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={loading}
-          className="w-full px-4 py-2 border border-zinc-300 rounded-lg shadow-sm text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all disabled:opacity-50"
+          className="w-full px-4 py-2 border border-zinc-300 rounded-lg shadow-sm text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
         />
       </div>
 
@@ -74,18 +81,19 @@ export default function LoginForm() {
         <input
           id="password"
           type="password"
+          required
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={loading}
-          className="w-full px-4 py-2 border border-zinc-300 rounded-lg shadow-sm text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all disabled:opacity-50"
+          className="w-full px-4 py-2 border border-zinc-300 rounded-lg shadow-sm text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-[#1A2530] text-white hover:bg-zinc-800 font-semibold px-4 py-2.5 rounded-lg text-sm transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] focus:outline-none font-semibold px-4 py-2.5 rounded-lg text-sm transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (
           <span className="inline-block animate-pulse">Authenticating profile...</span>

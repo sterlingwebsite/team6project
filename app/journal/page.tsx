@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { getSession } from 'next-auth/react';
 
 interface IJournalEntry {
   _id: string;
@@ -19,8 +20,8 @@ export default function JournalListPage() {
   useEffect(() => {
     async function loadJournalLogs() {
       try {
-        const sessionRes = await fetch('/api/auth/session');
-        if (!sessionRes.ok) {
+        const session = await getSession();
+        if (!session) {
           window.location.href = '/auth/login';
           return;
         }
@@ -51,7 +52,7 @@ export default function JournalListPage() {
     if (!confirm('Are you absolutely sure you want to delete this journal entry?')) return;
 
     try {
-      const response = await fetch(`/api/journal/${entryId}`, { method: 'DELETE' });
+      const response = await fetch(`/api/journal?id=${entryId}`, { method: 'DELETE' });
       if (response.ok) {
         setEntries(prev => prev.filter(item => item._id !== entryId));
       } else {
@@ -97,7 +98,7 @@ export default function JournalListPage() {
           </div>
           <Link
             href="/journal/new"
-            className="inline-flex items-center justify-center bg-[#D4AF37] text-white hover:bg-[#bfa032] font-semibold px-4 py-2 rounded-lg shadow-sm text-sm transition-all"
+            className="inline-flex items-center justify-center bg-[#1A2530] text-white hover:bg-zinc-800 font-semibold px-4 py-2 rounded-lg shadow-sm text-sm transition-all focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530]"
           >
             Write New Entry
           </Link>
@@ -105,14 +106,14 @@ export default function JournalListPage() {
 
         {entries.length === 0 ? (
           <div className="bg-white rounded-xl p-12 text-center border border-zinc-200 shadow-sm mt-8">
-            <span className="text-4xl block mb-4">📖</span>
+            <span className="text-4xl block mb-4" aria-hidden="true">📖</span>
             <h3 className="text-lg font-semibold text-[#1A2530] mb-2">You haven’t written any journal entries yet.</h3>
             <p className="text-sm text-zinc-500 max-w-sm mx-auto mb-6 leading-relaxed">
               Preserve your personal reflections, unique attendance dates, and spiritual promptings safely inside your profile vault.
             </p>
             <Link 
               href="/journal/new"
-              className="bg-[#1A2530] text-white hover:bg-zinc-800 px-5 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all inline-block"
+              className="bg-[#1A2530] text-white hover:bg-zinc-800 px-5 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all inline-block focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530]"
             >
               Write Your First Entry
             </Link>
@@ -130,7 +131,7 @@ export default function JournalListPage() {
                       {entry.templeName}
                     </h2>
                     <span className="text-xs text-zinc-400 font-semibold">
-                      • {new Date(entry.visitDate).toLocaleDateString(undefined, { dateStyle: 'long' })}
+                      • {new Date(entry.visitDate).toLocaleDateString(undefined, { dateStyle: 'long', timeZone: 'UTC' })}
                     </span>
                   </div>
                   
@@ -142,19 +143,19 @@ export default function JournalListPage() {
                 <div className="flex items-center gap-2 self-end md:self-center w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-zinc-100">
                   <Link
                     href={`/journal/${entry._id}`}
-                    className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors"
+                    className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#1A2530]"
                   >
                     View
                   </Link>
                   <Link
                     href={`/journal/${entry._id}/edit`}
-                    className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-white bg-[#1A2530] hover:bg-zinc-800 transition-colors"
+                    className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-white bg-[#1A2530] hover:bg-zinc-800 transition-colors focus:ring-2 focus:ring-[#1A2530]"
                   >
                     Edit
                   </Link>
                   <button
                     onClick={() => handleDeleteClick(entry._id)}
-                    className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+                    className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"
                   >
                     Delete
                   </button>

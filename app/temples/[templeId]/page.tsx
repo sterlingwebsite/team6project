@@ -88,14 +88,12 @@ const heroImageUrl = temple?.image?.thumb || temple?.image?.full || temple?.imag
     <div className="min-h-screen bg-[#FAFAFA] p-6 md:p-12">
       <div className="max-w-3xl mx-auto space-y-8">
         
-        {/* Navigation Breadcrumb */}
         <nav>
           <Link href="/temples" className="text-xs font-bold text-zinc-400 uppercase tracking-widest hover:text-[#D4AF37] transition-colors">
             ← Return to Directory
           </Link>
         </nav>
 
-        {/* Hero Image Banner Component View */}
         {heroImageUrl && !imgError && (
           <div className="w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-sm border border-zinc-200 bg-zinc-100">
             <img 
@@ -107,7 +105,6 @@ const heroImageUrl = temple?.image?.thumb || temple?.image?.full || temple?.imag
           </div>
         )}
 
-        {/* Header Metadata Card */}
         <header className="bg-white border border-zinc-200 rounded-2xl p-6 md:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-2">
             <span className="text-xs font-bold tracking-widest text-[#D4AF37] uppercase">House of the Lord</span>
@@ -128,7 +125,6 @@ const heroImageUrl = temple?.image?.thumb || temple?.image?.full || temple?.imag
           </div>
         )}
 
-        {/* C - Create Fact Form */}
         <CreateFactForm templeId={templeId} onSuccess={async () => {
           const factsRes = await fetch(`/api/temples/${templeId}/facts`, { cache: 'no-store' });
           if (factsRes.ok) {
@@ -139,7 +135,6 @@ const heroImageUrl = temple?.image?.thumb || temple?.image?.full || temple?.imag
           }
         }} />
 
-        {/* R/U/D - Facts Listing Feed Grid */}
         <section className="space-y-4">
           <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Community Historical Insights ({facts.length})</h3>
           
