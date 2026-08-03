@@ -29,7 +29,8 @@ export async function GET(
       templeId: templeId,
       text: fact.text || fact.factText || "",
       likesCount: fact.likesCount || 0,
-      createdAt: fact.createdAt || new Date().toISOString()
+      createdAt: fact.createdAt || new Date().toISOString(),
+      creatorId: fact.creatorId ? fact.creatorId.toString() : ""
     }));
 
     return NextResponse.json(normalizedFacts, { status: 200 });

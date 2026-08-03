@@ -6,6 +6,26 @@ import Link from 'next/link';
 import CreateFactForm from '@/components/CreateFactForm';
 import TempleFactRow from '@/components/TempleFactRow';
 
+interface ITempleDetail {
+  _id?: string;
+  name: string;
+  slug: string;
+  status: string;
+  image?: {
+    full: string;
+    thumb: string;
+  } | string;
+  imageUrl?: string;
+}
+
+interface ITempleFactItem {
+  _id: string;
+  templeId: string;
+  text: string;
+  likesCount: number;
+  createdAt: string;
+}
+
 type PageProps = {
   params: Promise<{ templeId: string }>;
 };
@@ -13,8 +33,8 @@ type PageProps = {
 export default function TempleDetailPage({ params }: PageProps) {
   const { templeId } = use(params);
 
-  const [temple, setTemple] = useState<any | null>(null);
-  const [facts, setFacts] = useState<any[]>([]);
+  const [temple, setTemple] = useState<ITempleDetail | null>(null);
+  const [facts, setFacts] = useState<ITempleFactItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imgError, setImgError] = useState(false);
@@ -42,7 +62,7 @@ export default function TempleDetailPage({ params }: PageProps) {
         if (factsRes.ok) {
           const data = await factsRes.json();
           const factsArray = data.facts || data || [];
-          factsArray.sort((a: any, b: any) => b.likesCount - a.likesCount);
+          factsArray.sort((a: ITempleFactItem, b: ITempleFactItem) => b.likesCount - a.likesCount);
           setFacts(factsArray);
         }
       } catch (err) {

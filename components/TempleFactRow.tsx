@@ -1,12 +1,14 @@
-// components\TempleFactRow.tsx
+// components/TempleFactRow.tsx
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface TempleFact {
   _id: string;
   text: string;
   likesCount: number;
+  creatorId?: string;
 }
 
 interface TempleFactRowProps {
@@ -20,6 +22,13 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
   const [editingText, setEditingText] = useState(fact.text);
   const [busy, setBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+
+  const { data: session } = useSession();
+  const currentUserId = session?.user?.id;
+
+  const sessionUserIdStr = currentUserId ? String(currentUserId).trim() : "";
+  const factCreatorIdStr = fact.creatorId ? String(fact.creatorId).trim() : "";
+  const isOwner = sessionUserIdStr !== "" && factCreatorIdStr !== "" && sessionUserIdStr === factCreatorIdStr;
 
   const handleUpdate = async () => {
     if (!editingText.trim()) return;
@@ -98,39 +107,38 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
                 className="flex-grow px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none"
               />
               <div className="flex gap-2 justify-end">
-                <button onClick={handleUpdate} disabled={busy} className="text-xs bg-green-700 text-white px-3 py-2 rounded-lg hover:bg-green-800 focus:ring-2 focus:ring-green-700 font-semibold shadow-sm">Save</button>
-                <button onClick={() => { setIsEditing(false); setActionError(null); }} disabled={busy} className="text-xs bg-zinc-100 text-zinc-600 px-3 py-2 rounded-lg hover:bg-zinc-200 focus:ring-2 focus:ring-zinc-400 font-semibold border border-zinc-200">Cancel</button>
+                <button onClick={handleUpdate} disabled={busy} className="text-xs bg-green-700 text-white px-3 py-2 rounded-lg hover:bg-green-800 font-semibold shadow-sm">Save</button>
+                <button onClick={() => { setIsEditing(false); setActionError(null); }} disabled={busy} className="text-xs bg-zinc-100 text-zinc-600 px-3 py-2 rounded-lg hover:bg-zinc-200 font-semibold border border-zinc-200">Cancel</button>
               </div>
             </div>
           ) : (
             <p className="text-zinc-600 text-sm leading-relaxed font-medium">"{fact.text}"</p>
           )}
 
-          <div className="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-zinc-100">
+          <div className="flex items-center gap-4 text-xs font-bold text-zinc-400 pt-1">
             <button 
               onClick={handleLike} 
-              className="hover:bg-zinc-200 focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none flex items-center gap-1.5 transition-colors bg-zinc-100 px-3 py-1.5 rounded-md text-zinc-700 font-semibold border border-zinc-200 text-xs shadow-sm"
+              className="hover:bg-zinc-200 focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none flex items-center gap-1.5 transition-colors bg-zinc-100 px-2.5 py-1.5 rounded-md text-zinc-700 font-semibold border border-zinc-200"
               aria-label={`Mark as helpful. Current votes: ${fact.likesCount || 0}`}
             >
               <span aria-hidden="true">👍</span> <span>{fact.likesCount || 0}</span>
             </button>
             
-            {!isEditing && (
-              <>
+            {!isEditing && isOwner && (
+              <div className="flex items-center gap-2 ml-auto">
                 <button 
                   onClick={() => { setIsEditing(true); setEditingText(fact.text); setActionError(null); }} 
                   className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#1A2530]"
                 >
                   Edit
                 </button>
-                
                 <button 
                   onClick={handleDelete} 
                   className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"
                 >
                   Delete
                 </button>
-              </>
+              </div>
             )}
           </div>
         </div>
