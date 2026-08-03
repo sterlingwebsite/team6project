@@ -50,9 +50,9 @@ export default function RegisterForm() {
       }
 
       router.push("/auth/login?registered=true");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Registration submittal error details:", err);
-      setErrorMessage(err.message || "Network transmission failure. Please try again later.");
+      setErrorMessage(err instanceof Error ? err.message : "Network transmission failure. Please try again later.");
       setLoading(false);
     }
   };

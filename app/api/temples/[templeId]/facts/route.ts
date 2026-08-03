@@ -14,7 +14,7 @@ export async function GET(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "team6project");
 
-    const queryConditions: any[] = [{ templeSlug: templeId }, { templeId: templeId }];
+    const queryConditions: Record<string, unknown>[] = [{ templeSlug: templeId }, { templeId: templeId }];
     if (ObjectId.isValid(templeId)) {
       queryConditions.push({ templeId: new ObjectId(templeId) });
     }

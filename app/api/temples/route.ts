@@ -3,6 +3,14 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { generateTempleSlug } from "@/utils/templeHelpers";
 
+interface IIncomingTemplePayload {
+  _id?: string;
+  id?: string | number;
+  slug?: string;
+  name: string;
+  [key: string]: unknown;
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -21,14 +29,14 @@ export async function GET(request: Request) {
     }
 
     const data = await res.json();
-    const rawTemples = data.temples || data.data || [];
+    const rawTemples: IIncomingTemplePayload[] = data.temples || data.data || [];
     const total = data.total_count || data.total || data.pagination?.total || data.meta?.total || rawTemples.length;
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
 
     const templesWithTopFacts = await Promise.all(
-      rawTemples.map(async (temple: any) => {
+      rawTemples.map(async (temple: IIncomingTemplePayload) => {
         const fallbackSlug = temple.slug || generateTempleSlug(temple.name);
         
         const standardizedId = temple._id || temple.id?.toString() || fallbackSlug;

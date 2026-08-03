@@ -13,6 +13,9 @@ const playfairDisplay = Playfair_Display({ variable: "--font-playfair-display", 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} h-full antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://www.templedb.org" crossOrigin="anonymous" />
+      </head>
       <body className="min-h-full bg-[#FAFAFA] text-[#1A2530] flex flex-col font-sans">
         <SessionProviderWrapper>
           <Header />

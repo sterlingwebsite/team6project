@@ -84,25 +84,30 @@ export default function TempleDetailPage({ params }: PageProps) {
     );
   }
 
-  const heroImageUrl = 
-    typeof temple?.image === 'string' ? temple.image : 
-    temple?.image?.full || temple?.image?.thumb || temple?.imageUrl || null;
+  const thumbnailImageUrl = typeof temple?.image === 'object' ? temple?.image?.thumb : null;
+  const fullImageUrl = typeof temple?.image === 'object' ? temple?.image?.full : null;
+  const baseImageUrl = typeof temple?.image === 'string' ? temple.image : null;
+  
+  const heroImageUrl = thumbnailImageUrl || fullImageUrl || temple?.imageUrl || baseImageUrl || null;
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] p-6 md:p-12">
       <div className="max-w-3xl mx-auto space-y-8">
         
         <nav aria-label="Breadcrumb">
-          <Link href="/temples" className="text-xs font-bold text-zinc-400 uppercase tracking-widest hover:text-[#9A7B1C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#9A7B1C] rounded p-0.5">
+          <Link href="/temples" className="text-xs font-bold text-zinc-600 uppercase tracking-widest hover:text-[#9A7B1C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#9A7B1C] rounded p-0.5">
             ← Return to Directory
           </Link>
         </nav>
 
         {heroImageUrl && !imgError && (
-          <div className="w-full h-64 md:h-80 rounded-2xl overflow-hidden shadow-sm border border-zinc-200 bg-zinc-100">
+          <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-sm border border-zinc-200 bg-zinc-100 relative">
             <img 
               src={heroImageUrl} 
               alt={temple?.name || 'Temple Photo'} 
+              fetchPriority="high"
+              width={640}
+              height={360}
               className="w-full h-full object-cover transform hover:scale-[1.01] transition-transform duration-500"
               onError={() => setImgError(true)}
             />
@@ -111,7 +116,9 @@ export default function TempleDetailPage({ params }: PageProps) {
 
         <header className="bg-white border border-zinc-200 rounded-2xl p-6 md:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-2">
-            <span className="text-xs font-bold tracking-widest text-[#9A7B1C] uppercase">House of the Lord</span>
+            <span className="text-xs font-bold tracking-widest text-[#7C6214] uppercase">
+              House of the Lord
+            </span>
             <h1 className="text-3xl font-serif font-bold text-[#1A2530] tracking-tight">
               {temple?.name || 'Temple Details'}
             </h1>
@@ -134,13 +141,15 @@ export default function TempleDetailPage({ params }: PageProps) {
           if (factsRes.ok) {
             const data = await factsRes.json();
             const factsArray = data.facts || data || [];
-            factsArray.sort((a: any, b: any) => b.likesCount - a.likesCount);
+            factsArray.sort((a: ITempleFactItem, b: ITempleFactItem) => b.likesCount - a.likesCount);
             setFacts(factsArray);
           }
         }} />
 
         <section className="space-y-4" aria-label="Community Historical Insights Grid">
-          <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Community Historical Insights ({facts.length})</h3>
+          <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
+            Community Historical Insights ({facts.length})
+          </h2>
           
           {facts.length === 0 ? (
             <div className="bg-white border border-zinc-200 rounded-2xl p-12 text-center text-sm text-zinc-400 shadow-sm">
@@ -158,7 +167,7 @@ export default function TempleDetailPage({ params }: PageProps) {
                     if (factsRes.ok) {
                       const data = await factsRes.json();
                       const factsArray = data.facts || data || [];
-                      factsArray.sort((a: any, b: any) => b.likesCount - a.likesCount);
+                      factsArray.sort((a: ITempleFactItem, b: ITempleFactItem) => b.likesCount - a.likesCount);
                       setFacts(factsArray);
                     }
                   }} 

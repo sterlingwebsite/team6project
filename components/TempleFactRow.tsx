@@ -112,7 +112,7 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
               </div>
             </div>
           ) : (
-            <p className="text-zinc-600 text-sm leading-relaxed font-medium">"{fact.text}"</p>
+            <p className="text-zinc-600 text-sm leading-relaxed font-medium">&quot;{fact.text}&quot;</p>
           )}
 
           <div className="flex items-center gap-4 text-xs font-bold text-zinc-400 pt-1">
@@ -134,7 +134,7 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
                 </button>
                 <button 
                   onClick={handleDelete} 
-                  className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"
+                  className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-800 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"
                 >
                   Delete
                 </button>

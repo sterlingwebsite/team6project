@@ -19,9 +19,7 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       await fetch('/api/auth/signout', { method: 'POST' });
-      
       document.cookie = "next-auth.session-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      
       window.location.href = '/';
     } catch (error) {
       console.error('Logout request failed:', error);
@@ -32,9 +30,9 @@ export default function Header() {
     <header className="w-full bg-white border-b border-gray-200 px-6 py-4 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
         
-        <Link href="/" className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-[#9A7B1C] rounded p-1">
+        <Link href="/" className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-[#7C6214] rounded p-1">
           <span className="text-2xl" aria-hidden="true">🏛️</span>
-          <span className="font-serif font-bold text-xl tracking-tight text-[#1A2530] group-hover:text-[#9A7B1C] transition-colors">
+          <span className="font-serif font-bold text-xl tracking-tight text-[#1A2530] group-hover:text-[#7C6214] transition-colors">
             Temples Journal
           </span>
         </Link>

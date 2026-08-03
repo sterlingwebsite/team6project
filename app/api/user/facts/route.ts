@@ -43,7 +43,7 @@ export async function GET(request: Request) {
         let templeIdString = '';
         
         try {
-          let query: any = {};
+          let query: Record<string, unknown> = {};
           
           if (fact.templeSlug) {
             query = { slug: fact.templeSlug };

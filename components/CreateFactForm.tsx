@@ -1,4 +1,4 @@
-// components\CreateFactForm.tsx
+// components/CreateFactForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -50,7 +50,7 @@ export default function CreateFactForm({ templeId, onSuccess }: CreateFactFormPr
 
   return (
     <section className="bg-white border border-zinc-200 p-6 rounded-2xl shadow-sm space-y-4" aria-label="Contribute Historical Insight Form">
-      <h3 className="text-xs font-bold text-[#1A2530] uppercase tracking-wider">Contribute Historical Fact</h3>
+      <h2 className="text-xs font-bold text-[#1A2530] uppercase tracking-wider">Contribute Historical Fact</h2>
       
       <div aria-live="assertive">
         {errorAlert && (

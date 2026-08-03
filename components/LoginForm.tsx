@@ -1,10 +1,9 @@
+// components/LoginForm.tsx
 'use client';
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const router = useRouter();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,40 +11,41 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setValidationError(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidationError(null);
 
-      if (!email.trim() || !password.trim()) {
-        setValidationError("Please fill out all mandatory credential fields.");
-        return;
+    if (!email.trim() || !password.trim()) {
+      setValidationError("Please fill out all mandatory credential fields.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password: password,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "Invalid email or password credentials supplied.");
       }
 
-      setLoading(true);
-
-      try {
-        const res = await fetch("/api/auth/signin", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email.trim().toLowerCase(),
-            password: password,
-          }),
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok || data.error) {
-          throw new Error(data.error || "Invalid email or password credentials supplied.");
-        }
-
-        window.location.href = "/dashboard";
-      } catch (err: any) {
-        console.error("Login client sequence details:", err);
-        setValidationError(err.message || "Authentication transmission failure. Please try again.");
-        setLoading(false);
-      }
-    };
+      window.location.href = "/dashboard";
+    } catch (err: unknown) {
+      console.error("Login client sequence details:", err);
+      const errorMessage = err instanceof Error ? err.message : "Authentication transmission failure. Please try again.";
+      setValidationError(errorMessage);
+      setLoading(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 no-validate">

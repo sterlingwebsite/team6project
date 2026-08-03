@@ -3,13 +3,29 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import clientPromise from '@/lib/mongodb';
 
+interface ITempleImageConfig {
+  full?: string;
+  thumb?: string;
+  caption?: string;
+}
+
 interface ITempleDocument {
   _id?: string | ObjectId;
   name: string;
   slug: string;
   status?: string;
-  image?: any;
+  image?: ITempleImageConfig;
   imageUrl?: string;
+}
+
+interface IRemoteTemplePayload {
+  slug: string;
+  id: string | number;
+  name: string;
+  status?: string;
+  image?: ITempleImageConfig;
+  imageUrl?: string;
+  [key: string]: unknown;
 }
 
 export async function GET(
@@ -22,7 +38,7 @@ export async function GET(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "team6project");
 
-    const queryConditions: any[] = [
+    const queryConditions: Record<string, unknown>[] = [
       { slug: templeId },
       { id: templeId },
       { name: { $regex: new RegExp(`^${templeId.replace(/-/g, ' ')}$`, 'i') } }
@@ -63,10 +79,10 @@ export async function GET(
 
       if (remoteRes.ok && temple) {
         const remoteData = await remoteRes.json();
-        const list = remoteData.temples || remoteData.data || [];
+        const list: IRemoteTemplePayload[] = remoteData.temples || remoteData.data || [];
 
         const remoteMatched =
-          list.find((t: any) => t.slug === templeId || t.id?.toString() === templeId || t.name?.toLowerCase() === cleanSearchTerm.toLowerCase()) ||
+          list.find((t: IRemoteTemplePayload) => t.slug === templeId || t.id?.toString() === templeId || t.name?.toLowerCase() === cleanSearchTerm.toLowerCase()) ||
           list[0];
 
         if (remoteMatched) {

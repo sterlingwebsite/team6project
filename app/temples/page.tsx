@@ -126,7 +126,7 @@ export default function TemplesPage() {
                         </h3>
                         
                         <p className="text-xs text-amber-800 font-medium italic mt-3 pt-2 border-t border-gray-100 line-clamp-2">
-                          💡 Fact: "{temple.mostLikedFact || 'Explore historical community insights inside.'}"
+                          💡 Fact: &quot;{temple.mostLikedFact || 'Explore historical community insights inside.'}&quot;
                         </p>
                       </div>
                     </div>

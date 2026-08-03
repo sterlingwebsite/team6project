@@ -38,7 +38,14 @@ export default function UserFactsPage() {
   };
 
   useEffect(() => {
-    loadUserFacts();
+    let active = true;
+    async function fetchAsyncData() {
+      if (active) {
+        await loadUserFacts();
+      }
+    }
+    fetchAsyncData();
+    return () => { active = false; };
   }, []);
 
   const handleUpdate = async (factId: string, templeId: string) => {
@@ -176,7 +183,7 @@ export default function UserFactsPage() {
                   ) : (
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pt-1">
                       <p className="text-zinc-600 text-sm leading-relaxed max-w-2xl">
-                        "{fact.text}"
+                        &quot;{fact.text}&quot;
                       </p>
                       <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                         <button

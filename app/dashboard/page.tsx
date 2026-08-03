@@ -1,3 +1,4 @@
+// app/dashboard/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,6 +8,14 @@ import { getSession } from 'next-auth/react';
 interface IRecentEntry {
   _id: string;
   templeName: string;
+  visitDate: string;
+  insights: string;
+}
+
+interface IIncomingJournalEntry {
+  _id: string;
+  templeId?: string;
+  templeName?: string;
   visitDate: string;
   insights: string;
 }
@@ -33,19 +42,18 @@ export default function DashboardPage() {
 
         const [journalRes, statsRes] = await Promise.all([
           fetch('/api/journal'),
-          // Appended ?liked=true parameter to target the explicit upvote tracking table
           fetch('/api/user/facts?liked=true')
         ]);
         
         let localTotalLogs = 0;
-        let localUniqueTemples = new Set<string>();
+        const localUniqueTemples = new Set<string>();
 
         if (journalRes.ok) {
-          const journalData = await journalRes.json();
-          setRecentEntries(journalData.slice(0, 3));
+          const journalData: IIncomingJournalEntry[] = await journalRes.json();
+          setRecentEntries(journalData.slice(0, 3) as IRecentEntry[]);
           
           localTotalLogs = journalData.length;
-          journalData.forEach((entry: any) => {
+          journalData.forEach((entry: IIncomingJournalEntry) => {
             if (entry.templeId) localUniqueTemples.add(entry.templeId);
           });
         }
