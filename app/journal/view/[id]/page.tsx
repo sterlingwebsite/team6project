@@ -1,3 +1,4 @@
+// app\journal\view\[id]\page.tsx
 'use client';
 
 import { useState, useEffect, use } from 'react';
@@ -27,7 +28,6 @@ export default function JournalDetailPage({ params }: PageProps) {
   useEffect(() => {
     async function loadSingleLog() {
       try {
-        // Rerouted the backend data lookup target to pass the object ID as a URL query parameter string
         const response = await fetch(`/api/journal?id=${id}`);
         if (response.status === 401 || response.status === 403) {
           setError('Unauthorized. You do not have ownership privileges to read this record.');
@@ -39,7 +39,6 @@ export default function JournalDetailPage({ params }: PageProps) {
         
         const data = await response.json();
         
-        // Find the specific item matching the dynamic ID parameters inside the returned array data stream
         const activeEntry = Array.isArray(data) 
           ? data.find((item: IJournalEntry) => item._id === id) 
           : data;
@@ -62,7 +61,6 @@ export default function JournalDetailPage({ params }: PageProps) {
   const handleDelete = async () => {
     if (!confirm('Are you certain you want to permanently delete this journal entry?')) return;
     try {
-      // Adjusted endpoint parameters string to target our unified central backend DELETE route helper safely
       const response = await fetch(`/api/journal?id=${id}`, { method: 'DELETE' });
       if (response.ok) {
         router.push('/journal');
@@ -88,7 +86,6 @@ export default function JournalDetailPage({ params }: PageProps) {
         <div className="w-full max-w-xl bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl text-center text-sm font-medium shadow-sm mb-4">
           ❌ {error || 'Journal entry not found.'}
         </div>
-        {/* Darkened text link to #9A7B1C and added explicit interactive focus boxes to satisfy strict WCAG checks */}
         <Link href="/journal" className="text-sm font-semibold text-[#9A7B1C] hover:underline focus:outline-none focus:ring-2 focus:ring-[#9A7B1C] rounded p-0.5">
           ← Return to Journal List
         </Link>
@@ -101,12 +98,10 @@ export default function JournalDetailPage({ params }: PageProps) {
       <div className="w-full max-w-2xl bg-white border border-zinc-200 rounded-2xl p-8 shadow-sm space-y-6">
         
         <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
-          {/* Darkened state actions and hover transitions for WCAG compliance */}
           <Link href="/journal" className="text-xs font-bold text-zinc-400 uppercase tracking-wider hover:text-[#9A7B1C] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-400 rounded">
             ← Back to Journal
           </Link>
           <div className="flex items-center gap-2">
-            {/* Updated path configuration pattern to route link structures to the correct subfolder action layout map */}
             <Link
               href={`/journal/edit/${id}`}
               className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#1A2530]"
@@ -123,7 +118,6 @@ export default function JournalDetailPage({ params }: PageProps) {
         </div>
 
         <div className="space-y-1">
-          {/* Darkened tag headers accent text color to #9A7B1C */}
           <p className="text-xs font-bold text-[#9A7B1C] uppercase tracking-widest">
             Spiritual Reflection Log
           </p>

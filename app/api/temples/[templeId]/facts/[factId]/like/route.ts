@@ -10,7 +10,6 @@ export async function POST(
 ) {
   const { templeId, factId } = await params;
 
-  // 1. Enforce active user session verification loops
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ message: "You must be signed in to vote on historical facts." }, { status: 401 });
@@ -25,35 +24,28 @@ export async function POST(
     const db = client.db(process.env.MONGODB_DB || "team6project");
     const targetFactId = new ObjectId(factId);
 
-    // 2. Fetch the logged-in profile record from your database
     const userRecord = await db.collection("users").findOne({ email: session.user.email });
     if (!userRecord) {
       return NextResponse.json({ message: "User account identity mismatch error." }, { status: 404 });
     }
 
-    // 3. Look up the targeted historical fact item node
     const fact = await db.collection("templeFacts").findOne({ _id: targetFactId });
     if (!fact) {
       return NextResponse.json({ message: "The targeted historical fact record could not be found." }, { status: 404 });
     }
 
-    // Guard: Prevent creator self-voting
     if (fact.creatorId.toString() === userRecord._id.toString()) {
       return NextResponse.json({ 
         message: "Validation Flag: You cannot vote on historical insights that you contributed yourself." 
       }, { status: 403 });
     }
 
-    // 4. Query your junction table to check for an existing vote record
     const existingLike = await db.collection("factLikes").findOne({
       userId: userRecord._id,
       factId: targetFactId
     });
 
-    // --- TOGGLE PIPELINE ACTION ---
     if (existingLike) {
-      // ACTION A: UNLIKE OPERATION
-      // Erase the tracking record and atomically decrement the main tally by -1
       await db.collection("factLikes").deleteOne({ _id: existingLike._id });
 
       const updateResult = await db.collection("templeFacts").findOneAndUpdate(
@@ -66,11 +58,9 @@ export async function POST(
         success: true,
         toggledAction: "unliked",
         likesCount: updateResult?.likesCount || 0
-      }, { status: 200 }); // Returns 200 OK cleanly
+      }, { status: 200 });
     }
 
-    // ACTION B: LIKE OPERATION
-    // If no previous record is found, log a new vote and atomically increment the main tally by +1
     await db.collection("factLikes").insertOne({
       userId: userRecord._id,
       factId: targetFactId,

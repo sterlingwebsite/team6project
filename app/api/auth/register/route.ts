@@ -13,18 +13,16 @@ export async function POST(request: NextRequest) {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB);
 
-    // Guard: Prevent account creation duplication
     const normalizedEmail = email.trim().toLowerCase();
     const existingUser = await db.collection("users").findOne({ email: normalizedEmail });
     if (existingUser) {
       return NextResponse.json({ message: "An account with this email address already exists." }, { status: 409 });
     }
 
-    // Insert user record with a raw text fallback matching your custom NextAuth authentication system
     const result = await db.collection("users").insertOne({
       name: username.trim(),
       email: normalizedEmail,
-      password: password, // Note: Production builds would leverage bcrypt hashing here
+      password: password,
       createdAt: new Date()
     });
 

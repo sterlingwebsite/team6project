@@ -1,3 +1,4 @@
+// app\temples\[templeId]\page.tsx
 'use client';
 
 import { useState, useEffect, use } from 'react';
@@ -63,7 +64,6 @@ export default function TempleDetailPage({ params }: PageProps) {
     );
   }
 
-  // Bulletproof hero image evaluation cascade managing string structures and nested model formats cleanly
   const heroImageUrl = 
     typeof temple?.image === 'string' ? temple.image : 
     temple?.image?.full || temple?.image?.thumb || temple?.imageUrl || null;
@@ -73,7 +73,6 @@ export default function TempleDetailPage({ params }: PageProps) {
       <div className="max-w-3xl mx-auto space-y-8">
         
         <nav aria-label="Breadcrumb">
-          {/* Shifted active hover transitions to accessible #9A7B1C gold values to satisfy color audits */}
           <Link href="/temples" className="text-xs font-bold text-zinc-400 uppercase tracking-widest hover:text-[#9A7B1C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#9A7B1C] rounded p-0.5">
             ← Return to Directory
           </Link>
@@ -92,7 +91,6 @@ export default function TempleDetailPage({ params }: PageProps) {
 
         <header className="bg-white border border-zinc-200 rounded-2xl p-6 md:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-2">
-            {/* Darkened subtitle branding labels text color parameters to #9A7B1C */}
             <span className="text-xs font-bold tracking-widest text-[#9A7B1C] uppercase">House of the Lord</span>
             <h1 className="text-3xl font-serif font-bold text-[#1A2530] tracking-tight">
               {temple?.name || 'Temple Details'}

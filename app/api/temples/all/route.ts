@@ -7,14 +7,12 @@ export async function GET() {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "team6project");
 
-    // Fetch every record, but pull only the fields we need to keep the file weight super light
     const temples = await db.collection("temples")
       .find({})
       .project({ name: 1, city: 1, country: 1, slug: 1 })
-      .sort({ name: 1 }) // Order alphabetically out of the box
+      .sort({ name: 1 })
       .toArray();
 
-    // Shape the data array to match the property keys expected by your Combobox child component
     const formattedTemples = temples.map(t => ({
       _id: t._id.toString(),
       name: t.name,
@@ -23,7 +21,7 @@ export async function GET() {
 
     return NextResponse.json(formattedTemples, { 
       status: 200,
-      headers: { "Cache-Control": "public, max-age=3600, s-maxage=3600" } // Cache on the client for 1 hour to boost performance
+      headers: { "Cache-Control": "public, max-age=3600, s-maxage=3600" }
     });
 
   } catch (error) {

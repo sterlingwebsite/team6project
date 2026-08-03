@@ -2,7 +2,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Force absolute workspace resolution path maps to eliminate @/ shortcut runtime breaks completely
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 import { MongoClient, Document } from 'mongodb';
@@ -24,7 +23,6 @@ export interface ITemple {
   country: string;
   phone: string | null;
   imageUrl: string;
-  // --- ADDED INTERFACE KEY TO COMPLY WITH FRONTEND BROWSER ITERATIONS ---
   image: {
     thumb: string;
     full: string;
@@ -73,7 +71,6 @@ async function runSeed() {
       const name = row['Temple'] || '';
       const slug = generateTempleSlug(name);
       
-      // Fixed absolute asset path configuration mapping parameters
       const fallbackUrl = `https://templedb.org{slug}.jpg`;
 
       return {
@@ -88,7 +85,6 @@ async function runSeed() {
         country: row['Country'] || '',
         phone: row['Phone'] || null,
         imageUrl: fallbackUrl,
-        // --- BUILT COHESIVE NESTED VALUE SUB-OBJECTS FOR YOUR DIRECTORY GRID ---
         image: {
           thumb: fallbackUrl,
           full: fallbackUrl
@@ -96,7 +92,6 @@ async function runSeed() {
       };
     }).filter((temple: ITemple) => temple.name !== '');
 
-    // Purge out existing records to clean out previous corrupted database rows configurations
     await collection.deleteMany({});
     
     const uploadResult = await collection.insertMany(templesToUpload as unknown as Document[]);

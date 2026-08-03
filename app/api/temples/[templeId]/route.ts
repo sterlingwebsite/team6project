@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import clientPromise from '@/lib/mongodb';
 
-// Define a safe local interface that allows optional tracking ids for unseeded fallback objects
 interface ITempleDocument {
   _id?: string | ObjectId;
   name: string;
@@ -23,14 +22,12 @@ export async function GET(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "team6project");
 
-    // 1. Defensively build our query filters
     const queryConditions: any[] = [
       { slug: templeId },
       { id: templeId },
       { name: { $regex: new RegExp(`^${templeId.replace(/-/g, ' ')}$`, 'i') } }
     ];
 
-    // Only append the _id parameter lookups if the incoming parameter string matches standard BSON parameters sizes
     if (ObjectId.isValid(templeId)) {
       queryConditions.push({ _id: new ObjectId(templeId) });
     }
@@ -39,11 +36,9 @@ export async function GET(
       $or: queryConditions
     });
 
-    // 2. Initialize our tracking reference variable using our explicit local interface structure
     let temple: ITempleDocument | null = null;
 
     if (localRecord) {
-      // Safely map the raw document database properties across
       temple = {
         _id: localRecord._id,
         name: localRecord.name,
@@ -54,14 +49,12 @@ export async function GET(
       };
     } else {
       console.warn(`[API Notice] Temple "${templeId}" not found in local collections. Attempting live remote proxy fallback...`);
-      // Assign fallback placeholder parameters safely satisfying interface options constraints
       temple = { 
         name: templeId.replace(/-/g, ' '), 
         slug: templeId 
       };
     }
 
-    // 3. Fetch remote TempleDB API records to enrich or fill data layers
     try {
       const cleanSearchTerm = templeId.replace(/-/g, ' ');
       const remoteRes = await fetch(
@@ -98,7 +91,6 @@ export async function GET(
       console.error("[API Warning] Remote TempleDB fetch failed:", fetchError);
     }
 
-    // Guard: Verify if the template holds valid property metrics before packing
     if (!temple || !temple.name || (!temple.image && !temple.imageUrl)) {
       return NextResponse.json(
         { error: `Temple profile matching "${templeId}" could not be resolved from local or remote assets.` },

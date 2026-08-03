@@ -1,17 +1,16 @@
+// components\Header.tsx
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react'; // Official reactive state hook wrapper tool
+import { useSession } from 'next-auth/react';
 import NavLinks from './NavLinks';
 
 export default function Header() {
   const pathname = usePathname();
-  // Extract real-time authentication pipeline status states instantly
   const { status } = useSession();
   const isAuthenticated = status === "authenticated";
 
-  // Hide the header entirely on the landing page and core registration portals
   const isPublicWelcomeRoute = pathname === "/" || pathname?.startsWith("/auth/");
   if (isPublicWelcomeRoute) {
     return null;
@@ -21,7 +20,6 @@ export default function Header() {
     try {
       await fetch('/api/auth/signout', { method: 'POST' });
       
-      // Expire and clear the tracking token cookie on the client side
       document.cookie = "next-auth.session-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       
       window.location.href = '/';
@@ -42,7 +40,6 @@ export default function Header() {
         </Link>
 
         <div className="flex items-center gap-8">
-          {/* Reactive navbar visibility updates instantly without page reload delays */}
           {isAuthenticated && <NavLinks />}
         </div>
 

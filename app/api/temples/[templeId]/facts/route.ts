@@ -2,9 +2,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
-import { auth } from "@/auth"; // Enforces user authorization session loops
+import { auth } from "@/auth";
 
-// 1. READ ALL FACTS FOR A SPECIFIC TEMPLE (GET)
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ templeId: string }> }
@@ -15,7 +14,6 @@ export async function GET(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "team6project");
 
-    // Fetch facts that match either the temple ObjectId or text string slug identifier
     const queryConditions: any[] = [{ templeSlug: templeId }, { templeId: templeId }];
     if (ObjectId.isValid(templeId)) {
       queryConditions.push({ templeId: new ObjectId(templeId) });
@@ -23,14 +21,13 @@ export async function GET(
 
     const facts = await db.collection("templeFacts")
       .find({ $or: queryConditions })
-      .sort({ likesCount: -1 }) // Keep the most popular community contributions on top!
+      .sort({ likesCount: -1 })
       .toArray();
 
-    // Map object structures cleanly to match frontend property specifications
     const normalizedFacts = facts.map(fact => ({
       _id: fact._id.toString(),
       templeId: templeId,
-      text: fact.text || fact.factText || "", // Fixed variable mismatch string key protection mapping
+      text: fact.text || fact.factText || "",
       likesCount: fact.likesCount || 0,
       createdAt: fact.createdAt || new Date().toISOString()
     }));
@@ -43,14 +40,12 @@ export async function GET(
   }
 }
 
-// 2. SUBMIT A NEW HISTORICAL FACT (POST)
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ templeId: string }> }
 ) {
   const { templeId } = await params;
   
-  // Enforce validation to verify user session context permissions
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ message: "You must be signed in to add temple facts." }, { status: 401 });
@@ -67,7 +62,6 @@ export async function POST(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "team6project");
 
-    // Pull the active user account ID reference object shell card details
     const userRecord = await db.collection("users").findOne({ email: session.user.email });
     if (!userRecord) {
       return NextResponse.json({ message: "User account identity mismatch error." }, { status: 404 });

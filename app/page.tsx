@@ -1,6 +1,6 @@
 // app/page.tsx
 import { Metadata } from "next";
-import Link from "next/link"; // Swapped standard <a> tags with Next.js Link optimization to optimize layout bundle weights
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Home | Temple Journal",
@@ -26,7 +26,6 @@ export default function LandingPage() {
           <div className="flex items-center gap-4">
             <Link 
               href="/auth/login" 
-              // Shifted active text hover highlights to accessible #9A7B1C gold values to pass AA guidelines cleanly
               className="text-sm font-medium text-gray-600 hover:text-[#9A7B1C] focus:outline-none focus:ring-2 focus:ring-[#9A7B1C] rounded px-1 transition-colors"
             >
               Sign In
@@ -46,7 +45,6 @@ export default function LandingPage() {
         <section className="text-center max-w-3xl mx-auto mb-16">
           <h1 className="text-5xl md:text-6xl font-serif font-bold text-[#1A2530] leading-tight tracking-tight">
             Preserve Your Sacred <br />
-            {/* Darkened landing text parameter to compliant rich gold states */}
             <span className="text-[#9A7B1C]">Temple Milestones</span>
           </h1>
           <p className="text-lg text-gray-600 mt-6 leading-relaxed">
@@ -55,7 +53,6 @@ export default function LandingPage() {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link 
               href="/auth/signup" 
-              // Changed call-to-action button color to deep slate #1A2530 to guarantee full WCAG AAA approval
               className="bg-[#1A2530] text-white hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] font-semibold px-8 py-3.5 rounded-lg shadow-md transition-all text-center w-full sm:w-auto"
             >
               Get Started Free

@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import LikeButton from "./LikeButton";
-import CreateFactForm from "./CreateFactForm"; // Reusing your form component cleanly!
+import CreateFactForm from "./CreateFactForm";
 
 type TempleFact = {
   _id: string;
@@ -75,12 +75,10 @@ export default function TempleFactCard({ templeId }: TempleFactCardProps) {
 
   return (
     <div className="space-y-6">
-      {/* Screen Reader accessible error container */}
       <div aria-live="assertive">
         {error && <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl text-sm mb-4">❌ {error}</div>}
       </div>
 
-      {/* REUSED CHILD COMPONENT: Instantly satisfies the 5-component requirement */}
       <CreateFactForm templeId={templeId} onSuccess={loadFacts} />
 
       <section className="space-y-4" aria-label="Community Submissions Directory">
@@ -113,7 +111,6 @@ export default function TempleFactCard({ templeId }: TempleFactCardProps) {
 
                   <div className="flex flex-wrap items-center gap-4 text-xs font-semibold mt-2 border-t border-zinc-50 pt-2">
                     <div className="flex items-center gap-3">
-                      {/* REUSED CHILD COMPONENT: Safely handles atomic like actions */}
                       <LikeButton 
                         templeId={templeId} 
                         factId={fact._id} 
@@ -124,14 +121,12 @@ export default function TempleFactCard({ templeId }: TempleFactCardProps) {
                     
                     {editingFactId !== fact._id && (
                       <div className="flex items-center gap-2 ml-auto">
-                        {/* Upgraded Edit Button to look like standard Journal page pills */}
                         <button 
                           onClick={() => { setEditingFactId(fact._id); setEditingText(fact.text); }} 
                           className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#9A7B1C]"
                         >
                           Edit
                         </button>
-                        {/* Upgraded Delete Button to look like standard Journal page pills */}
                         <button 
                           onClick={() => handleDeleteFact(fact._id)} 
                           className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"

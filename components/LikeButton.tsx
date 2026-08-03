@@ -1,3 +1,4 @@
+// components\LikeButton.tsx
 "use client";
 
 import { useState } from "react";
@@ -10,7 +11,6 @@ type LikeButtonProps = {
 
 export default function LikeButton({ templeId, factId, onLikeSuccess }: LikeButtonProps) {
   const [isLiking, setIsLiking] = useState(false);
-  // Added an inline error string to eliminate generic browser alert pops completely
   const [errorText, setErrorText] = useState<string | null>(null);
 
   async function handleLike() {
@@ -47,7 +47,6 @@ export default function LikeButton({ templeId, factId, onLikeSuccess }: LikeButt
       <button
         onClick={handleLike}
         disabled={isLiking}
-        // Swapped amber with a clean zinc fill to pass strict WCAG contrast checks perfectly
         className="rounded-md bg-zinc-100 hover:bg-zinc-200 text-zinc-700 focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none px-3 py-1.5 text-xs font-semibold transition-colors disabled:opacity-50 flex items-center gap-1"
       >
         <span aria-hidden="true">👍</span>

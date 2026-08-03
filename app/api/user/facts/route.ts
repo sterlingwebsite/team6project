@@ -15,7 +15,6 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    // Added a dynamic parameter flag switch to separate creations from upvotes
     const fetchLikedOnly = searchParams.get('liked') === 'true';
 
     const client = await clientPromise;
@@ -26,16 +25,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ message: 'User profile not found.' }, { status: 404 });
     }
 
-    // --- NEW SWITCH CONDITION: FETCH VOTE RECORDS INSIDE THE JUNCTION TABLE ---
     if (fetchLikedOnly) {
       const likedRecordsCount = await db.collection('factLikes')
         .countDocuments({ userId: user._id });
         
       return NextResponse.json({ total: likedRecordsCount }, { status: 200 });
     }
-    // ------------------------------------------------------------------------
 
-    // DEFAULT ACTION: FETCH INDIVIDUAL CREATIONS
     const userFacts = await db.collection('templeFacts')
       .find({ creatorId: user._id })
       .sort({ createdAt: -1 })
@@ -45,14 +41,27 @@ export async function GET(request: Request) {
       userFacts.map(async (fact) => {
         let templeName = 'Unknown Temple';
         let templeIdString = '';
+        
         try {
-          const query = fact.templeId ? { _id: new ObjectId(fact.templeId) } : { slug: fact.templeSlug };
+          let query: any = {};
+          
+          if (fact.templeSlug) {
+            query = { slug: fact.templeSlug };
+          } else if (fact.templeId && ObjectId.isValid(fact.templeId.toString())) {
+            query = { _id: new ObjectId(fact.templeId.toString()) };
+          } else {
+            query = { slug: fact.templeId };
+          }
+            
           const temple = await db.collection('temples').findOne(query);
           if (temple) {
             templeName = temple.name || 'Unknown Temple';
             templeIdString = temple._id.toString();
           }
-        } catch {}
+        } catch (joinError) {
+          console.error("Temple join operation failure:", joinError);
+        }
+        
         return {
           ...fact,
           templeId: fact.templeId ? fact.templeId.toString() : templeIdString,

@@ -42,7 +42,6 @@ export async function GET(request: Request) {
       userRecord = { _id: insertionResult.insertedId, email: user.email };
     }
 
-    // --- NEW CONDITION: HANDLE SINGLE RECORD QUERY (?id=...) ---
     if (entryId) {
       if (!ObjectId.isValid(entryId)) {
         return NextResponse.json({ message: 'Invalid journal entry ID format.' }, { status: 400 });
@@ -57,7 +56,6 @@ export async function GET(request: Request) {
         return NextResponse.json({ message: 'Journal entry not found.' }, { status: 404 });
       }
 
-      // Populate Temple Name
       let templeName = 'Unknown Temple';
       try {
         const temple = await db.collection('temples').findOne({ _id: new ObjectId(entry.templeId) });
@@ -68,9 +66,7 @@ export async function GET(request: Request) {
 
       return NextResponse.json({ ...entry, templeName }, { status: 200 });
     }
-    // -----------------------------------------------------------
 
-    // DEFAULT ACTION: FETCH ALL USER ENTRIES
     const entries = await db
       .collection('journalEntries')
       .find({ userId: userRecord._id })

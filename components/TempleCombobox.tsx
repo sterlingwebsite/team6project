@@ -71,13 +71,11 @@ export function TempleCombobox({ temples, status, onSelect, hasError }: TempleCo
                       type="button"
                       onClick={() => {
                         onSelect(temple._id);
-                        // Updated to assign ONLY the clean temple name back to the text input box
                         setSearchQuery(temple.name);
                         setIsOpen(false);
                       }}
                       className="w-full text-left px-4 py-2.5 text-sm text-[#1A2530] hover:bg-zinc-50 transition-colors focus:bg-zinc-50 focus:outline-none"
                     >
-                      {/* Removed the trailing location metadata element completely */}
                       {temple.name}
                     </button>
                   </li>

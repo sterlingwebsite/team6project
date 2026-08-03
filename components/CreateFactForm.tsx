@@ -1,3 +1,4 @@
+// components\CreateFactForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -10,7 +11,6 @@ interface CreateFactFormProps {
 export default function CreateFactForm({ templeId, onSuccess }: CreateFactFormProps) {
   const [newFactText, setNewFactText] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  // Added error message state feedback to satisfy dynamic UX requirements
   const [errorAlert, setErrorAlert] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -52,7 +52,6 @@ export default function CreateFactForm({ templeId, onSuccess }: CreateFactFormPr
     <section className="bg-white border border-zinc-200 p-6 rounded-2xl shadow-sm space-y-4" aria-label="Contribute Historical Insight Form">
       <h3 className="text-xs font-bold text-[#1A2530] uppercase tracking-wider">Contribute Historical Fact</h3>
       
-      {/* Screen Reader accessible error container window block */}
       <div aria-live="assertive">
         {errorAlert && (
           <p className="text-xs text-[#C62828] font-semibold bg-red-50 p-2.5 border border-red-200 rounded-lg">
@@ -70,13 +69,11 @@ export default function CreateFactForm({ templeId, onSuccess }: CreateFactFormPr
           value={newFactText}
           onChange={(e) => setNewFactText(e.target.value)}
           disabled={submitting}
-          // Darkened active text highlights to #9A7B1C gold values to pass AA guidelines cleanly
           className="flex-grow px-4 py-2.5 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={submitting || !newFactText.trim()}
-          // Changed CTA background color to deep slate #1A2530 to guarantee full WCAG AAA approval
           className="bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] font-semibold px-6 py-2.5 rounded-lg text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
         >
           {submitting ? "Submitting..." : "Submit Fact"}

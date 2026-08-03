@@ -1,3 +1,4 @@
+// components\TempleFactRow.tsx
 'use client';
 
 import { useState } from 'react';
@@ -18,7 +19,6 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
   const [isEditing, setIsEditing] = useState(false);
   const [editingText, setEditingText] = useState(fact.text);
   const [busy, setBusy] = useState(false);
-  // Added an explicit error state tracker to satisfy native UX rubric requirements cleanly
   const [actionError, setActionError] = useState<string | null>(null);
 
   const handleUpdate = async () => {
@@ -78,7 +78,6 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
 
   return (
     <div className="bg-white border border-zinc-200 p-6 rounded-2xl shadow-sm flex flex-col gap-3 transition-all hover:shadow-md">
-      {/* Screen Reader accessible error text notification strip block */}
       <div aria-live="assertive">
         {actionError && (
           <p className="text-xs text-[#C62828] font-semibold bg-red-50 p-2.5 border border-red-200 rounded-lg w-full mb-1">
@@ -96,7 +95,6 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
                 value={editingText}
                 onChange={(e) => setEditingText(e.target.value)}
                 disabled={busy}
-                // Darkened focus outline states to rich accessible #9A7B1C gold values
                 className="flex-grow px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none"
               />
               <div className="flex gap-2 justify-end">
@@ -109,7 +107,6 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
           )}
 
           <div className="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-zinc-100">
-            {/* Re-styled Helpful Vote counter to look uniform with your listing logs */}
             <button 
               onClick={handleLike} 
               className="hover:bg-zinc-200 focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none flex items-center gap-1.5 transition-colors bg-zinc-100 px-3 py-1.5 rounded-md text-zinc-700 font-semibold border border-zinc-200 text-xs shadow-sm"
@@ -120,7 +117,6 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
             
             {!isEditing && (
               <>
-                {/* Upgraded Edit Button to match your clean Journal page listing aesthetic exactly */}
                 <button 
                   onClick={() => { setIsEditing(true); setEditingText(fact.text); setActionError(null); }} 
                   className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#1A2530]"
@@ -128,7 +124,6 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
                   Edit
                 </button>
                 
-                {/* Upgraded Delete Button to match your clean Journal page listing aesthetic exactly */}
                 <button 
                   onClick={handleDelete} 
                   className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"

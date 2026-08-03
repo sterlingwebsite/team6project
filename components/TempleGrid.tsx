@@ -1,11 +1,12 @@
+// components\TempleGrid.tsx
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link'; // Swapped standard <a> tag with Next.js Link optimization to prevent page reloads
+import Link from 'next/link';
 import { ITemple } from '../utils/templeHelpers';
 
 interface IPaginatedTemple extends ITemple {
-  _id: string; // Explicit identifier tag mapping requirement matching unified backend router pipelines
+  _id: string;
 }
 
 interface TempleGridProps {
@@ -14,7 +15,6 @@ interface TempleGridProps {
 
 export default function TempleGrid({ initialTemples }: TempleGridProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  // Replaced risky DOM mutations with a standard, declarative React state map tracker
   const [brokenImages, setBrokenImages] = useState<Record<string, boolean>>({});
 
   const filteredTemples = (initialTemples || []).filter(temple => 
@@ -36,7 +36,6 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
           placeholder="e.g., Aba Nigeria, Salt Lake..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          // Shifted active text focus highlight properties to accessible #9A7B1C gold values to pass AA guidelines cleanly
           className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none text-gray-900 bg-white"
         />
         <p className="text-xs text-gray-400 mt-1" aria-live="polite">
@@ -55,14 +54,12 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
             const isImageBroken = brokenImages[temple.slug || index];
             const hasImage = imageUrl && !isImageBroken;
             
-            // Normalized route tracking links to point cleanly to your dynamic [templeId] path structure definition
             const targetId = temple._id || temple.slug || index;
 
             return (
               <Link 
                 href={`/temples/${targetId}`} 
                 key={temple.slug ? `${temple.slug}-${index}` : `grid-${index}`}
-                // Added focus outlines so keyboard tab-navigating graders can see the card highlight box outline cleanly
                 className="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md focus-within:ring-2 focus-within:ring-[#9A7B1C] focus-within:outline-none transition-all duration-200 flex flex-col justify-between"
               >
                 <div>
@@ -73,7 +70,6 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
                         alt={temple.name}
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                        // Safe React-state re-render toggle trick clearing raw innerHTML assignments completely
                         onError={() => setBrokenImages(prev => ({ ...prev, [temple.slug || index]: true }))}
                       />
                     ) : (
@@ -91,7 +87,6 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
                   </div>
 
                   <div className="p-5">
-                    {/* Darkened card header colors to compliant accessible gold states inside hovers */}
                     <h3 className="font-serif font-bold text-lg text-[#1A2530] line-clamp-1 group-hover:text-[#9A7B1C] transition-colors">
                       {temple.name}
                     </h3>
@@ -102,7 +97,6 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
                 </div>
 
                 <div className="p-5 pt-0">
-                  {/* Swapped inline link colors to accessible high contrast text styles */}
                   <span className="inline-flex items-center text-sm font-medium text-[#9A7B1C] group-hover:underline">
                     View Journal & Details →
                   </span>

@@ -20,13 +20,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(mockProviders, { status: 200 });
   }
 
-  // --- DYNAMIC PROFILE-AWARE SESSION PARSING PIPELINE ---
   if (path.endsWith("/session")) {
     const authCookie = request.cookies.get("next-auth.session-token")?.value;
     
     if (authCookie && authCookie.startsWith("session-valid-for-")) {
       try {
-        // Extract the raw email identifier string embedded inside the cookie token parameters
         const emailFromCookie = authCookie.replace("session-valid-for-", "");
         
         const client = await clientPromise;
@@ -49,7 +47,7 @@ export async function GET(request: NextRequest) {
       }
     }
     
-    return NextResponse.json({}, { status: 200 }); // Return empty block if token parses invalid
+    return NextResponse.json({}, { status: 200 });
   }
 
   return NextResponse.json({ message: "Auth endpoint initialized." }, { status: 200 });
@@ -107,7 +105,6 @@ export async function POST(request: NextRequest) {
 
       const response = NextResponse.json({ url: "/dashboard" }, { status: 200 });
 
-      // --- EMBED ACCOUNT IDENTITY STRINGS DIRECTLY INSIDE THE TRACKING TOKEN ---
       response.cookies.set("next-auth.session-token", `session-valid-for-${user.email}`, {
         path: "/",
         httpOnly: true,

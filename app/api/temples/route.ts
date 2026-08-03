@@ -31,8 +31,6 @@ export async function GET(request: Request) {
       rawTemples.map(async (temple: any) => {
         const fallbackSlug = temple.slug || generateTempleSlug(temple.name);
         
-        // --- 1. CRITICAL DATA NORMALIZATION FOR FRONTEND CARDS ---
-        // Guarantees an explicit identifier parameter always maps cleanly to target _id properties expected by link hooks
         const standardizedId = temple._id || temple.id?.toString() || fallbackSlug;
         
         let topFact = "Explore historical community insights inside.";
@@ -44,7 +42,6 @@ export async function GET(request: Request) {
               $or: [
                 { templeSlug: queryIdentifier }, 
                 { templeId: queryIdentifier },
-                // Fallback condition to account for standard normalized item match parameters strings
                 { templeId: standardizedId }
               ] 
             })
@@ -61,7 +58,6 @@ export async function GET(request: Request) {
 
         return {
           ...temple,
-          // Expose standard standardized keys so your frontend item loop properties never map as undefined
           _id: standardizedId,
           slug: fallbackSlug,
           mostLikedFact: topFact

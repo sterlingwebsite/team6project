@@ -1,11 +1,12 @@
+// app\temples\page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link'; // Swapped <a> tag with Next.js Link optimization to prevent full page reloads
+import Link from 'next/link';
 import { ITemple } from '@/utils/templeHelpers';
 
 interface IPaginatedTemple extends ITemple {
-  _id: string; // Explicit identifier tag mapping requirement
+  _id: string;
   mostLikedFact?: string;
 }
 
@@ -66,7 +67,6 @@ export default function TemplesPage() {
             placeholder="Search e.g., Aba Nigeria, Salt Lake..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            // Shifted active text focus highlight properties to accessible #9A7B1C gold values to pass AA guidelines
             className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none text-gray-900 bg-white"
           />
           <p className="text-xs text-gray-400 mt-1" aria-live="polite">
@@ -89,14 +89,12 @@ export default function TemplesPage() {
                 const imageUrl = temple.image?.thumb || temple.image?.full;
                 const hasImage = imageUrl && !brokenImages[temple.slug || index];
                 const itemKey = temple._id ? `temple-${temple._id}` : `temple-${index}`;
-                // Normalized route tracking links to point cleanly to your dynamic [templeId] path structure definition
                 const targetId = temple._id || temple.slug;
 
                 return (
                   <Link 
                     href={`/temples/${targetId}`} 
                     key={itemKey}
-                    // Added explicit focus outlines so keyboard tab-navigating graders can see the card highlight box
                     className="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md focus-within:ring-2 focus-within:ring-[#9A7B1C] focus-within:outline-none transition-shadow duration-200 flex flex-col justify-between"
                   >
                     <div>
@@ -123,7 +121,6 @@ export default function TemplesPage() {
                       </div>
 
                       <div className="p-5">
-                        {/* Darkened card header colors to compliant accessible gold states inside hovers */}
                         <h3 className="font-serif font-bold text-lg text-[#1A2530] line-clamp-1 group-hover:text-[#9A7B1C] transition-colors">
                           {temple.name}
                         </h3>
@@ -135,7 +132,6 @@ export default function TemplesPage() {
                     </div>
 
                     <div className="p-5 pt-0">
-                      {/* Swapped inline link colors to accessible high contrast text styles */}
                       <span className="inline-flex items-center text-sm font-medium text-[#9A7B1C] group-hover:underline">
                         View Journal & Details →
                       </span>

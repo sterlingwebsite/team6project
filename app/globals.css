@@ -4,7 +4,6 @@
 :root {
   --background: #FAFAFA;
   --foreground: #171717;
-  /* Darkened base gold token variable to #9A7B1C to ensure all themed elements pass WCAG audits */
   --color-brand-gold: #9A7B1C;
   --color-brand-slate: #1A2530;
 }
@@ -23,7 +22,6 @@
   :root {
     --background: #0A0A0A;
     --foreground: #EDEDED;
-    /* Keeps active gold readable on dark theme dark dashboard layout boards */
     --color-brand-gold: #E5C158;
   }
 }
@@ -31,7 +29,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  /* Fixed override bug: links variables directly to optimized Next.js font utility files */
   font-family: var(--font-sans);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }

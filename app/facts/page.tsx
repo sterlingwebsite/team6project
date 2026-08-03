@@ -118,7 +118,6 @@ export default function UserFactsPage() {
             <p className="text-sm text-zinc-400 max-w-xs mx-auto leading-relaxed">
               When you add historical milestones or unique architectural features directly to individual temple profile screens, they will aggregate inside this management pane.
             </p>
-            {/* Swapped style background to high-contrast dark blue layout brand parameters to clear WCAG audits */}
             <Link
               href="/temples"
               className="inline-block bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] px-5 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm"
@@ -137,7 +136,6 @@ export default function UserFactsPage() {
                 <div className="flex flex-wrap items-center justify-between border-b border-zinc-100 pb-3 gap-2">
                   <div className="flex items-center gap-1.5">
                     <span className="text-base" aria-hidden="true">🏛️</span>
-                    {/* Shifted active text hover attributes to rich accessible #9A7B1C gold values */}
                     <Link 
                       href={`/temples/${fact.templeId}`}
                       className="font-serif font-bold text-base text-[#1A2530] hover:text-[#9A7B1C] transition-all hover:underline focus:ring-2 focus:ring-[#9A7B1C] rounded p-0.5"
@@ -158,7 +156,6 @@ export default function UserFactsPage() {
                         type="text"
                         value={editingText}
                         onChange={(e) => setEditingText(e.target.value)}
-                        // Updated input ring boundaries to use compliant tracking layouts
                         className="flex-grow px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none"
                       />
                       <div className="flex gap-2 justify-end">
@@ -188,7 +185,6 @@ export default function UserFactsPage() {
                         >
                           Edit
                         </button>
-                        {/* Corrected truncated code syntax block down below safely */}
                         <button
                           onClick={() => handleDelete(fact._id, fact.templeId)}
                           className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"

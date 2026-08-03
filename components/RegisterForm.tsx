@@ -1,3 +1,4 @@
+// components\RegisterForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -19,7 +20,6 @@ export default function RegisterForm() {
     e.preventDefault();
     setErrorMessage(null);
 
-    // Client-side field checking rules
     if (!username.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
       setErrorMessage("Please fill out all mandatory registration input fields.");
       return;
@@ -49,7 +49,6 @@ export default function RegisterForm() {
         throw new Error(data.message || "Failed to create user account profile.");
       }
 
-      // Automatically forward users straight to the login panel upon successful creation
       router.push("/auth/login?registered=true");
     } catch (err: any) {
       console.error("Registration submittal error details:", err);
@@ -65,7 +64,6 @@ export default function RegisterForm() {
       </h1>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
-        {/* Screen Reader accessible alert window box layout */}
         <div aria-live="assertive">
           {errorMessage && (
             <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg text-xs font-medium text-center shadow-sm">

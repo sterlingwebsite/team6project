@@ -3,7 +3,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { TempleCombobox } from "./TempleCombobox"; // Reusing our brand new dropdown child!
+import { TempleCombobox } from "./TempleCombobox";
 
 type Temple = {
   _id: string;
@@ -112,7 +112,6 @@ export function NewJournalEntryForm() {
           Select Temple
         </label>
         
-        {/* REUSED FLEXIBLE COMBOMOX CHILD COMPONENT */}
         <TempleCombobox 
           temples={temples}
           status={templesStatus}

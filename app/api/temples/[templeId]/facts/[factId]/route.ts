@@ -2,17 +2,14 @@
 import { NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import clientPromise from '@/lib/mongodb';
-import { auth } from '@/auth'; // Safe central authentication checker wrapper
+import { auth } from '@/auth';
 
-// 1. UPDATE ACTION HANDLER PIPELINE (PUT)
 export async function PUT(
   request: Request, 
   { params }: { params: Promise<{ templeId: string; factId: string }> }
 ) {
-  // Await the asynchronous params object block cleanly to satisfy modern Next.js compiler parameters
   const { factId } = await params;
   
-  // Enforce dynamic active checking sessions loops
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ message: 'You must be signed in to modify contributions.' }, { status: 401 });
@@ -44,7 +41,6 @@ export async function PUT(
       return NextResponse.json({ message: 'Fact documentation node not found.' }, { status: 404 });
     }
 
-    // Verify profile ownership rules before running update scripts
     if (fact.creatorId.toString() !== user._id.toString()) {
       return NextResponse.json({ message: 'Unauthorized modification attempt.' }, { status: 403 });
     }
@@ -61,7 +57,6 @@ export async function PUT(
   }
 }
 
-// 2. ERASURE ACTION HANDLER PIPELINE (DELETE)
 export async function DELETE(
   request: Request, 
   { params }: { params: Promise<{ templeId: string; factId: string }> }
@@ -88,7 +83,6 @@ export async function DELETE(
     const fact = await db.collection('templeFacts').findOne({ _id: targetId });
     if (!fact) return NextResponse.json({ message: 'Fact documentation node not found.' }, { status: 404 });
 
-    // Verify profile ownership rules before running deletion scripts
     if (fact.creatorId.toString() !== user._id.toString()) {
       return NextResponse.json({ message: 'Unauthorized deletion attempt.' }, { status: 403 });
     }

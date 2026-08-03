@@ -1,7 +1,7 @@
 // app/layout.tsx
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import Header from "@/components/Header";
-import SessionProviderWrapper from "@/components/SessionProviderWrapper"; // Added wrapper import
+import SessionProviderWrapper from "@/components/SessionProviderWrapper";
 import "./globals.css";
 import { metadata } from "./metadata";
 export { metadata };
@@ -14,7 +14,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} h-full antialiased`}>
       <body className="min-h-full bg-[#FAFAFA] text-[#1A2530] flex flex-col font-sans">
-        {/* Wrapped elements to broadcast active session state changes instantly */}
         <SessionProviderWrapper>
           <Header />
           <main className="flex-grow flex flex-col w-full">
