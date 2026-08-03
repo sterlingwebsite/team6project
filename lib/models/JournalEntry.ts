@@ -1,4 +1,4 @@
-// lib\models\JournalEntry.ts
+// lib/models/JournalEntry.ts
 import { ObjectId } from 'mongodb';
 
 export interface JournalEntryDocument {
@@ -35,6 +35,14 @@ export function validateJournalEntryInput(body: unknown): {
 
   const raw = body as Record<string, unknown>;
 
+  // --- RESTORED MANDATORY TEMPLEID CHECK BLOCK ---
+  if (!raw.templeId || typeof raw.templeId !== 'string' || !raw.templeId.trim()) {
+    errors.templeId = 'templeId is required.';
+  } else if (!ObjectId.isValid(raw.templeId)) {
+    errors.templeId = 'templeId must be a valid ObjectId.';
+  }
+
+  // --- KEEP YOUR CLEAN TIMEZONE-SAFE DATE VALIDATION ---
   if (!raw.visitDate || typeof raw.visitDate !== 'string' || !raw.visitDate.trim()) {
     errors.visitDate = 'visitDate is required.';
   } else {

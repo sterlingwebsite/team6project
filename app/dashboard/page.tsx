@@ -33,7 +33,8 @@ export default function DashboardPage() {
 
         const [journalRes, statsRes] = await Promise.all([
           fetch('/api/journal'),
-          fetch('/api/user/facts')
+          // Appended ?liked=true parameter to target the explicit upvote tracking table
+          fetch('/api/user/facts?liked=true')
         ]);
         
         let localTotalLogs = 0;

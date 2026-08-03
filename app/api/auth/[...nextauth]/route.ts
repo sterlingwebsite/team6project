@@ -20,19 +20,36 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(mockProviders, { status: 200 });
   }
 
+  // --- DYNAMIC PROFILE-AWARE SESSION PARSING PIPELINE ---
   if (path.endsWith("/session")) {
     const authCookie = request.cookies.get("next-auth.session-token")?.value;
-    if (authCookie === "sterling-valid-session") {
-      return NextResponse.json({
-        user: {
-          id: "65f1a2b3c4d5e6f7a8b9c0d1",
-          name: "Sterling Steele",
-          email: "sterling@example.com"
-        },
-        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString()
-      }, { status: 200 });
+    
+    if (authCookie && authCookie.startsWith("session-valid-for-")) {
+      try {
+        // Extract the raw email identifier string embedded inside the cookie token parameters
+        const emailFromCookie = authCookie.replace("session-valid-for-", "");
+        
+        const client = await clientPromise;
+        const db = client.db(process.env.MONGODB_DB || "team6project");
+        
+        const user = await db.collection("users").findOne({ email: emailFromCookie });
+        
+        if (user) {
+          return NextResponse.json({
+            user: {
+              id: user._id.toString(),
+              name: user.name || "User",
+              email: user.email
+            },
+            expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString()
+          }, { status: 200 });
+        }
+      } catch (dbError) {
+        console.error("Session lookup database parsing failure:", dbError);
+      }
     }
-    return NextResponse.json({}, { status: 200 });
+    
+    return NextResponse.json({}, { status: 200 }); // Return empty block if token parses invalid
   }
 
   return NextResponse.json({ message: "Auth endpoint initialized." }, { status: 200 });
@@ -42,19 +59,11 @@ export async function POST(request: NextRequest) {
   const url = new URL(request.url);
   const path = url.pathname;
 
-  // --- NEW INTERCEPTION BLOCK: HANDLE SIGNOUT ACTION PIPELINE ---
   if (path.endsWith("/signout")) {
     const response = NextResponse.json({ success: true, message: "Logged out cleanly." }, { status: 200 });
-    
-    // Clear the tracking token session cookie by expiring it instantly on the client
-    response.cookies.set("next-auth.session-token", "", {
-      path: "/",
-      maxAge: 0
-    });
-    
+    response.cookies.set("next-auth.session-token", "", { path: "/", maxAge: 0 });
     return response;
   }
-  // -------------------------------------------------------------
 
   if (path.includes("/callback/credentials") || path.includes("/signin/credentials") || path.endsWith("/signin")) {
     try {
@@ -86,7 +95,7 @@ export async function POST(request: NextRequest) {
       }
 
       const client = await clientPromise;
-      const db = client.db(process.env.MONGODB_DB);
+      const db = client.db(process.env.MONGODB_DB || "team6project");
       
       const user = await db.collection("users").findOne({ 
         email: email.trim().toLowerCase() 
@@ -96,11 +105,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Invalid email or password credentials supplied" }, { status: 401 });
       }
 
-      const response = NextResponse.json({
-        url: "/dashboard"
-      }, { status: 200 });
+      const response = NextResponse.json({ url: "/dashboard" }, { status: 200 });
 
-      response.cookies.set("next-auth.session-token", "sterling-valid-session", {
+      // --- EMBED ACCOUNT IDENTITY STRINGS DIRECTLY INSIDE THE TRACKING TOKEN ---
+      response.cookies.set("next-auth.session-token", `session-valid-for-${user.email}`, {
         path: "/",
         httpOnly: true,
         sameSite: "lax",

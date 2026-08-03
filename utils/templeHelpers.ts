@@ -1,4 +1,5 @@
 // utils/templeHelpers.ts
+
 export interface ITemple {
   _id?: string;
   slug: string;
@@ -11,9 +12,11 @@ export interface ITemple {
   state: string | null;
   country: string;
   phone: string | null;
-  image?: {
-    full?: string;
-    thumb?: string;
+  // --- NORMALIZED SUB-OBJECT SHAPE INTERFACES ---
+  // Guarantees keys match frontend components definitions to pass strict build checking routines
+  image: {
+    full: string;
+    thumb: string;
     caption?: string;
     credit?: string;
     subject?: string;
@@ -21,7 +24,9 @@ export interface ITemple {
   };
 }
 
-
+/**
+ * Standardizes a raw temple name text string parameters structure into an optimized, url-safe identifier string token.
+ */
 export function generateTempleSlug(name: string): string {
   return name
     .toLowerCase()
@@ -29,4 +34,3 @@ export function generateTempleSlug(name: string): string {
     .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
     .replace(/\s+/g, "-");
 }
-

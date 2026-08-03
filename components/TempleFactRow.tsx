@@ -108,20 +108,33 @@ export default function TempleFactRow({ fact, templeId, onRefresh }: TempleFactR
             <p className="text-zinc-600 text-sm leading-relaxed font-medium">"{fact.text}"</p>
           )}
 
-          <div className="flex items-center gap-4 text-xs font-bold text-zinc-400 pt-1">
-            {/* Swapped low-contrast yellow pills with an accessible zinc utility container block */}
+          <div className="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-zinc-100">
+            {/* Re-styled Helpful Vote counter to look uniform with your listing logs */}
             <button 
               onClick={handleLike} 
-              className="hover:bg-zinc-200 focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none flex items-center gap-1.5 transition-colors bg-zinc-100 px-2.5 py-1.5 rounded-md text-zinc-700 font-semibold border border-zinc-200"
+              className="hover:bg-zinc-200 focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none flex items-center gap-1.5 transition-colors bg-zinc-100 px-3 py-1.5 rounded-md text-zinc-700 font-semibold border border-zinc-200 text-xs shadow-sm"
               aria-label={`Mark as helpful. Current votes: ${fact.likesCount || 0}`}
             >
               <span aria-hidden="true">👍</span> <span>{fact.likesCount || 0}</span>
             </button>
+            
             {!isEditing && (
               <>
-                {/* Changed inline action label text links parameters to pass strict WCAG AA contrast evaluations */}
-                <button onClick={() => { setIsEditing(true); setEditingText(fact.text); setActionError(null); }} className="text-zinc-500 hover:text-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] rounded px-1 transition-colors">Edit</button>
-                <button onClick={handleDelete} className="text-zinc-500 hover:text-red-600 focus:ring-2 focus:ring-red-600 rounded px-1 transition-colors">Delete</button>
+                {/* Upgraded Edit Button to match your clean Journal page listing aesthetic exactly */}
+                <button 
+                  onClick={() => { setIsEditing(true); setEditingText(fact.text); setActionError(null); }} 
+                  className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#1A2530]"
+                >
+                  Edit
+                </button>
+                
+                {/* Upgraded Delete Button to match your clean Journal page listing aesthetic exactly */}
+                <button 
+                  onClick={handleDelete} 
+                  className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"
+                >
+                  Delete
+                </button>
               </>
             )}
           </div>

@@ -1,47 +1,26 @@
-'use client';
-
+// app/layout.tsx
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
-import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
+import SessionProviderWrapper from "@/components/SessionProviderWrapper"; // Added wrapper import
 import "./globals.css";
+import { metadata } from "./metadata";
+export { metadata };
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const playfairDisplay = Playfair_Display({ variable: "--font-playfair-display", subsets: ["latin"] });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair-display",
-  subsets: ["latin"],
-});
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const pathname = usePathname();
-
-  const isPublicRoute = 
-    pathname === "/" || 
-    pathname?.startsWith("/auth/");
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} h-full antialiased`}>
       <body className="min-h-full bg-[#FAFAFA] text-[#1A2530] flex flex-col font-sans">
-        {!isPublicRoute && <Header />}
-        
-        <div className="flex-grow flex flex-col w-full">
-          {children}
-        </div>
+        {/* Wrapped elements to broadcast active session state changes instantly */}
+        <SessionProviderWrapper>
+          <Header />
+          <main className="flex-grow flex flex-col w-full">
+            {children}
+          </main>
+        </SessionProviderWrapper>
       </body>
     </html>
   );

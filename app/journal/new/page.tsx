@@ -8,7 +8,9 @@ export const metadata = {
 
 export default function NewJournalEntryPage() {
   return (
-    <div className="min-h-screen bg-[#FAFAFA] p-6 md:p-12 flex items-center justify-center">
+    // Changed layout wrapping container from p-6 md:p-12 to an explicit bottom padding block pb-32
+    // This pushes the form up and forces space beneath the select fields, eliminating drop-down truncations
+    <div className="min-h-screen bg-[#FAFAFA] p-6 md:p-12 pb-32 flex items-center justify-center">
       <div className="w-full max-w-2xl bg-white border border-zinc-200 rounded-2xl p-8 shadow-sm space-y-6">
         
         <header className="border-b border-zinc-100 pb-4">
@@ -21,7 +23,6 @@ export default function NewJournalEntryPage() {
           </p>
         </header>
 
-        {/* Nest our clean form child down below */}
         <NewJournalEntryForm />
 
       </div>

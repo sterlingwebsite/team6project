@@ -39,8 +39,7 @@ export default function LoginForm() {
           throw new Error(data.error || "Invalid email or password credentials supplied.");
         }
 
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
       } catch (err: any) {
         console.error("Login client sequence details:", err);
         setValidationError(err.message || "Authentication transmission failure. Please try again.");

@@ -1,8 +1,9 @@
-// app/journal/new/NewJournalEntryForm.tsx
+// components/NewJournalEntryForm.tsx
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { TempleCombobox } from "./TempleCombobox"; // Reusing our brand new dropdown child!
 
 type Temple = {
   _id: string;
@@ -43,11 +44,13 @@ export function NewJournalEntryForm() {
 
     async function loadTemples() {
       try {
-        const res = await fetch("/api/temples");
+        const res = await fetch("/api/temples/all");
         if (!res.ok) throw new Error("Failed to load temples");
         const data = await res.json();
+        const list = Array.isArray(data) ? data : (data.temples ?? []);
+        
         if (!cancelled) {
-          setTemples(Array.isArray(data) ? data : (data.temples ?? []));
+          setTemples(list);
           setTemplesStatus("ready");
         }
       } catch {
@@ -56,24 +59,15 @@ export function NewJournalEntryForm() {
     }
 
     loadTemples();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
   function validate(): FieldErrors {
     const errors: FieldErrors = {};
-
-    if (!templeId) errors.templeId = "Please select a temple.";
-    
-    if (!visitDate) {
-      errors.visitDate = "Please enter a visit date.";
-    } else if (visitDate > today()) {
-      errors.visitDate = "Visit date cannot be in the future.";
-    }
-
+    if (!templeId) errors.templeId = "Please select a temple destination location.";
+    if (!visitDate) errors.visitDate = "Please enter a visit date.";
+    else if (visitDate > today()) errors.visitDate = "Visit date cannot be in the future.";
     if (!insights.trim()) errors.insights = "Please share a spiritual insight from your visit.";
-
     return errors;
   }
 
@@ -112,35 +106,23 @@ export function NewJournalEntryForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
+      
       <div className="flex flex-col gap-2">
-        <label htmlFor="templeId" className="text-sm font-semibold text-[#1A2530] dark:text-zinc-200">
+        <label htmlFor="templeSearch" className="text-sm font-semibold text-[#1A2530]">
           Select Temple
         </label>
-        {templesStatus === "error" ? (
-          <p className="text-sm text-[#C62828]" role="alert">
-            Couldn&apos;t load the temple list. Please try again later.
-          </p>
-        ) : (
-          <select
-            id="templeId"
-            name="templeId"
-            value={templeId}
-            onChange={(e) => setTempleId(e.target.value)}
-            disabled={templesStatus === "loading"}
-            aria-invalid={Boolean(fieldErrors.templeId)}
-            aria-describedby={fieldErrors.templeId ? "templeId-error" : undefined}
-            className="rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
-          >
-            <option value="" disabled>
-              {templesStatus === "loading" ? "Loading temples..." : "Click to select a temple location"}
-            </option>
-            {temples.map((temple) => (
-              <option key={temple._id} value={temple._id}>
-                {temple.name} — {temple.location}
-              </option>
-            ))}
-          </select>
-        )}
+        
+        {/* REUSED FLEXIBLE COMBOMOX CHILD COMPONENT */}
+        <TempleCombobox 
+          temples={temples}
+          status={templesStatus}
+          onSelect={(id) => {
+            setTempleId(id);
+            setFieldErrors(prev => ({ ...prev, templeId: undefined }));
+          }}
+          hasError={Boolean(fieldErrors.templeId)}
+        />
+        
         {fieldErrors.templeId && (
           <p id="templeId-error" className="text-sm text-[#C62828] font-medium" role="alert">
             ⚠️ {fieldErrors.templeId}
@@ -149,7 +131,7 @@ export function NewJournalEntryForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="visitDate" className="text-sm font-semibold text-[#1A2530] dark:text-zinc-200">
+        <label htmlFor="visitDate" className="text-sm font-semibold text-[#1A2530]">
           Date of Visit
         </label>
         <input
@@ -161,7 +143,7 @@ export function NewJournalEntryForm() {
           onChange={(e) => setVisitDate(e.target.value)}
           aria-invalid={Boolean(fieldErrors.visitDate)}
           aria-describedby={fieldErrors.visitDate ? "visitDate-error" : undefined}
-          className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          className="rounded-lg border border-zinc-300 bg-white text-[#1A2530] px-4 py-2 text-sm focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none"
         />
         {fieldErrors.visitDate && (
           <p id="visitDate-error" className="text-sm text-[#C62828] font-medium" role="alert">
@@ -171,7 +153,7 @@ export function NewJournalEntryForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="insights" className="text-sm font-semibold text-[#1A2530] dark:text-zinc-200">
+        <label htmlFor="insights" className="text-sm font-semibold text-[#1A2530]">
           Spiritual Insights & Promptings
         </label>
         <textarea
@@ -183,7 +165,7 @@ export function NewJournalEntryForm() {
           placeholder="Reflect on what you experienced during this temple visit..."
           aria-invalid={Boolean(fieldErrors.insights)}
           aria-describedby={fieldErrors.insights ? "insights-error" : undefined}
-          className="resize-y rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          className="resize-y rounded-lg border border-zinc-300 bg-white text-[#1A2530] px-4 py-3 text-sm focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none"
         />
         {fieldErrors.insights && (
           <p id="insights-error" className="text-sm text-[#C62828] font-medium" role="alert">
@@ -202,7 +184,7 @@ export function NewJournalEntryForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-full bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] focus:outline-none font-medium px-6 py-2.5 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-60 shadow-sm"
+          className="rounded-full bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] focus:outline-none font-medium px-6 py-2.5 text-sm transition-all disabled:opacity-60 shadow-sm"
         >
           {submitting ? "Saving entry..." : "Save Reflection Entry"}
         </button>

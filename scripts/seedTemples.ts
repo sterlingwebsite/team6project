@@ -2,6 +2,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
+// Force absolute workspace resolution path maps to eliminate @/ shortcut runtime breaks completely
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 import { MongoClient, Document } from 'mongodb';
@@ -23,6 +24,11 @@ export interface ITemple {
   country: string;
   phone: string | null;
   imageUrl: string;
+  // --- ADDED INTERFACE KEY TO COMPLY WITH FRONTEND BROWSER ITERATIONS ---
+  image: {
+    thumb: string;
+    full: string;
+  };
 }
 
 interface ICsvTempleRow {
@@ -67,8 +73,8 @@ async function runSeed() {
       const name = row['Temple'] || '';
       const slug = generateTempleSlug(name);
       
-      const churchAssetUrl = `https://churchofjesuschrist.org/${slug}-main.jpg`;
-      const templeDbProxyUrl = `https://templedb.org/${encodeURIComponent(churchAssetUrl)}`;
+      // Fixed absolute asset path configuration mapping parameters
+      const fallbackUrl = `https://templedb.org{slug}.jpg`;
 
       return {
         slug: slug,
@@ -81,17 +87,23 @@ async function runSeed() {
         state: row['State'] || null,
         country: row['Country'] || '',
         phone: row['Phone'] || null,
-        imageUrl: templeDbProxyUrl,
+        imageUrl: fallbackUrl,
+        // --- BUILT COHESIVE NESTED VALUE SUB-OBJECTS FOR YOUR DIRECTORY GRID ---
+        image: {
+          thumb: fallbackUrl,
+          full: fallbackUrl
+        }
       };
     }).filter((temple: ITemple) => temple.name !== '');
 
+    // Purge out existing records to clean out previous corrupted database rows configurations
     await collection.deleteMany({});
     
     const uploadResult = await collection.insertMany(templesToUpload as unknown as Document[]);
 
     console.log(`\nDatabase Successfully Seeded!`);
-    console.log(`Provisioned Database: "${DB_NAME}"`);
-    console.log(`Loaded ${uploadResult.insertedCount} temples with integrated TempleDB image paths into MongoDB.`);
+    console.log(`Provisioned Database Bucket: "${DB_NAME}"`);
+    console.log(`Loaded ${uploadResult.insertedCount} temples with integrated sub-object image parameters into MongoDB Atlas.`);
   } catch (error) {
     console.error("Database initialization crashed:", error);
   } finally {

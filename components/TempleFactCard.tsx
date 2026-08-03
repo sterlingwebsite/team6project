@@ -1,3 +1,4 @@
+// components/TempleFactCard.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -122,10 +123,21 @@ export default function TempleFactCard({ templeId }: TempleFactCardProps) {
                     </div>
                     
                     {editingFactId !== fact._id && (
-                      <div className="flex gap-4 ml-auto">
-                        {/* Darkened text colors to #9A7B1C gold to pass accessibility scans */}
-                        <button onClick={() => { setEditingFactId(fact._id); setEditingText(fact.text); }} className="text-zinc-500 hover:text-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] rounded px-1 transition-colors">Edit</button>
-                        <button onClick={() => handleDeleteFact(fact._id)} className="text-zinc-500 hover:text-red-600 focus:ring-2 focus:ring-red-600 rounded px-1 transition-colors">Delete</button>
+                      <div className="flex items-center gap-2 ml-auto">
+                        {/* Upgraded Edit Button to look like standard Journal page pills */}
+                        <button 
+                          onClick={() => { setEditingFactId(fact._id); setEditingText(fact.text); }} 
+                          className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#9A7B1C]"
+                        >
+                          Edit
+                        </button>
+                        {/* Upgraded Delete Button to look like standard Journal page pills */}
+                        <button 
+                          onClick={() => handleDeleteFact(fact._id)} 
+                          className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"
+                        >
+                          Delete
+                        </button>
                       </div>
                     )}
                   </div>

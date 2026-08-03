@@ -1,3 +1,4 @@
+<!-- specs\001-temple-journal\spec.md -->
 # Feature Specification: Church of Jesus Christ Temples Journal App
 
 **Feature Branch**: `001-temple-journal`  
