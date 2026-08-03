@@ -48,7 +48,7 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 no-validate">
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       <div aria-live="assertive">
         {validationError && (
           <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-lg text-xs font-medium text-center shadow-sm">
@@ -58,7 +58,8 @@ export default function LoginForm() {
       </div>
 
       <div>
-        <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
+        {/* Darkened text-zinc-500 to text-zinc-600 for contrast compliance */}
+        <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-1.5">
           Email Address
         </label>
         <input
@@ -69,12 +70,12 @@ export default function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={loading}
-          className="w-full px-4 py-2 border border-zinc-300 rounded-lg shadow-sm text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
+          className="w-full px-4 py-2 border border-zinc-300 rounded-lg shadow-sm text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#6E5611] focus:border-[#6E5611] focus:outline-none transition-all disabled:opacity-50"
         />
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
+        <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-1.5">
           Password
         </label>
         <input
@@ -85,7 +86,7 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={loading}
-          className="w-full px-4 py-2 border border-zinc-300 rounded-lg shadow-sm text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
+          className="w-full px-4 py-2 border border-zinc-300 rounded-lg shadow-sm text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#6E5611] focus:border-[#6E5611] focus:outline-none transition-all disabled:opacity-50"
         />
       </div>
 

@@ -1,4 +1,4 @@
-// components\Header.tsx
+// components/Header.tsx
 'use client';
 
 import Link from 'next/link';
@@ -30,9 +30,18 @@ export default function Header() {
     <header className="w-full bg-white border-b border-gray-200 px-6 py-4 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
         
-        <Link href="/" className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-[#7C6214] rounded p-1">
-          <span className="text-2xl" aria-hidden="true">🏛️</span>
-          <span className="font-serif font-bold text-xl tracking-tight text-[#1A2530] group-hover:text-[#7C6214] transition-colors">
+        <Link href="/" className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-[#6E5611] rounded p-1">
+          {/* 🛠️ FIX: Swapped out the raw native text emoji for a highly accessible, crisp SVG vector shape */}
+          <svg 
+            className="w-6 h-6 text-[#6E5611] transition-colors" 
+            fill="currentColor" 
+            viewBox="0 0 24 24" 
+            aria-hidden="true"
+          >
+            <path d="M12 2L2 7v2h20V7L12 2zm1 14h3v3h-3v-3zm-5 0h3v3H8v-3zm11 3v-3h2v3h-2zM4 16v-3h2v3H4zm4-5h2v3H8v-3zm5 0h3v3h-3v-3zM2 22h20v2H2v-2z" />
+          </svg>
+          
+          <span className="font-serif font-bold text-xl tracking-tight text-[#1A2530] group-hover:text-[#6E5611] transition-colors">
             Temples Journal
           </span>
         </Link>
@@ -45,7 +54,7 @@ export default function Header() {
           {isAuthenticated ? (
             <button
               onClick={handleLogout}
-              className="text-xs font-semibold px-3 py-1.5 border border-gray-300 rounded-md text-gray-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-600 transition-colors"
+              className="text-xs font-semibold px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:text-red-600 hover:border-red-200 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-600 transition-colors"
             >
               Sign Out
             </button>

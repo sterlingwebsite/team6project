@@ -1,8 +1,10 @@
-// app\facts\page.tsx
+// app/facts/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import FactCard from "@/components/FactCard";
+import EmptyFactsState from "@/components/EmptyFactsState";
 
 interface IUserFact {
   _id: string;
@@ -17,20 +19,15 @@ export default function UserFactsPage() {
   const [facts, setFacts] = useState<IUserFact[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingText, setEditingText] = useState('');
 
   const loadUserFacts = async () => {
     try {
       const response = await fetch('/api/user/facts', { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error('Failed to load your contributed facts folder data.');
-      }
+      if (!response.ok) throw new Error('Failed to load your contributed data.');
       const data = await response.json();
       setFacts(data || []);
     } catch (err) {
-      console.error('Error fetching user fact collections:', err);
+      console.error('Error fetching fact collections:', err);
       setError('Could not retrieve your shared facts collection. Please try again.');
     } finally {
       setLoading(false);
@@ -38,60 +35,45 @@ export default function UserFactsPage() {
   };
 
   useEffect(() => {
-    let active = true;
-    async function fetchAsyncData() {
-      if (active) {
-        await loadUserFacts();
-      }
-    }
-    fetchAsyncData();
-    return () => { active = false; };
+    loadUserFacts();
   }, []);
 
-  const handleUpdate = async (factId: string, templeId: string) => {
-    if (!editingText.trim()) return;
-
+  const handleUpdate = async (factId: string, templeId: string, text: string) => {
     try {
       const res = await fetch(`/api/temples/${templeId}/facts/${factId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: editingText.trim() })
+        body: JSON.stringify({ text })
       });
 
       if (res.ok) {
-        setEditingId(null);
-        setEditingText('');
         await loadUserFacts();
       } else {
-        alert('Failed to update fact. Please verify your profile permissions.');
+        alert('Failed to update fact. Please verify profile permissions.');
       }
     } catch (err) {
-      console.error('Update error submission execution:', err);
+      console.error('Update lifecycle failure:', err);
     }
   };
 
   const handleDelete = async (factId: string, templeId: string) => {
-    if (!confirm('Are you absolutely certain you want to permanently delete this historical fact? This action cannot be undone.')) return;
-
+    if (!confirm('Are you certain you want to permanently delete this historical fact?')) return;
     try {
-      const res = await fetch(`/api/temples/${templeId}/facts/${factId}`, {
-        method: 'DELETE'
-      });
-
+      const res = await fetch(`/api/temples/${templeId}/facts/${factId}`, { method: 'DELETE' });
       if (res.ok) {
         await loadUserFacts();
       } else {
         alert('Failed to delete fact documentation.');
       }
     } catch (err) {
-      console.error('Delete execution lifecycle failure:', err);
+      console.error('Delete execution failure:', err);
     }
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
-        <p className="text-zinc-500 animate-pulse font-medium text-sm">Opening your contributions vault...</p>
+        <p className="text-zinc-700 animate-pulse font-medium text-sm">Opening your contributions vault...</p>
       </div>
     );
   }
@@ -103,13 +85,22 @@ export default function UserFactsPage() {
         <header className="border-b border-zinc-200 pb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-serif font-bold text-[#1A2530]">My Contributed Facts</h1>
-            <p className="text-zinc-500 text-sm mt-1">Review, modify, or remove historical facts you have added to the directory.</p>
+            <p className="text-zinc-700 text-sm mt-1">Review, modify, or remove historical facts you have added to the directory.</p>
           </div>
           <Link
             href="/temples"
-            className="inline-flex items-center justify-center bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all"
+            className="inline-flex items-center justify-center gap-2 bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all"
           >
-            🏛️ Browse Temples
+            {/* 🛠️ FIX: Removed the typo and replaced the raw emoji character with a crisp, accessible inline SVG icon */}
+            <svg 
+              className="w-4 h-4 shrink-0 text-white" 
+              fill="currentColor" 
+              viewBox="0 0 24 24" 
+              aria-hidden="true"
+            >
+              <path d="M12 2L2 7v2h20V7L12 2zm1 14h3v3h-3v-3zm-5 0h3v3H8v-3zm11 3v-3h2v3h-2zM4 16v-3h2v3H4zm4-5h2v3H8v-3zm5 0h3v3h-3v-3zM2 22h20v2H2v-2z" />
+            </svg>
+            <span>Browse Temples</span>
           </Link>
         </header>
 
@@ -118,96 +109,19 @@ export default function UserFactsPage() {
             ❌ {error}
           </div>
         ) : facts.length === 0 ? (
-          
-          <div className="bg-white border border-zinc-200 rounded-xl p-12 text-center max-w-xl mx-auto space-y-4 shadow-sm">
-            <span className="text-4xl block" aria-hidden="true">💡</span>
-            <h3 className="text-lg font-semibold text-[#1A2530]">No contributions tracked yet</h3>
-            <p className="text-sm text-zinc-400 max-w-xs mx-auto leading-relaxed">
-              When you add historical milestones or unique architectural features directly to individual temple profile screens, they will aggregate inside this management pane.
-            </p>
-            <Link
-              href="/temples"
-              className="inline-block bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] px-5 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm"
-            >
-              Explore Directory & Contribute
-            </Link>
-          </div>
+          <EmptyFactsState />
         ) : (
-          
           <div className="space-y-4">
             {facts.map((fact) => (
-              <div 
-                key={fact._id} 
-                className="bg-white border border-zinc-200 p-6 rounded-xl shadow-sm space-y-4 transition-all hover:shadow-md"
-              >
-                <div className="flex flex-wrap items-center justify-between border-b border-zinc-100 pb-3 gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-base" aria-hidden="true">🏛️</span>
-                    <Link 
-                      href={`/temples/${fact.templeId}`}
-                      className="font-serif font-bold text-base text-[#1A2530] hover:text-[#9A7B1C] transition-all hover:underline focus:ring-2 focus:ring-[#9A7B1C] rounded p-0.5"
-                    >
-                      {fact.templeName || 'View Temple Details'}
-                    </Link>
-                  </div>
-                  <div className="flex items-center gap-3 text-xs font-semibold text-zinc-400">
-                    <span>👍 {fact.likesCount || 0} Peer Votes</span>
-                    <span>• Added {new Date(fact.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium', timeZone: 'UTC' })}</span>
-                  </div>
-                </div>
-
-                <div>
-                  {editingId === fact._id ? (
-                    <div className="flex flex-col sm:flex-row gap-2 w-full pt-1">
-                      <input
-                        type="text"
-                        value={editingText}
-                        onChange={(e) => setEditingText(e.target.value)}
-                        className="flex-grow px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none"
-                      />
-                      <div className="flex gap-2 justify-end">
-                        <button 
-                          onClick={() => handleUpdate(fact._id, fact.templeId)}
-                          className="text-xs bg-green-700 text-white px-3 py-2 rounded-lg hover:bg-green-800 focus:ring-2 focus:ring-green-700 font-semibold shadow-sm"
-                        >
-                          Save
-                        </button>
-                        <button 
-                          onClick={() => { setEditingId(null); setEditingText(''); }}
-                          className="text-xs bg-zinc-100 text-zinc-600 px-3 py-2 rounded-lg hover:bg-zinc-200 focus:ring-2 focus:ring-zinc-400 font-semibold border border-zinc-200"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pt-1">
-                      <p className="text-zinc-600 text-sm leading-relaxed max-w-2xl">
-                        &quot;{fact.text}&quot;
-                      </p>
-                      <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                        <button
-                          onClick={() => { setEditingId(fact._id); setEditingText(fact.text); }}
-                          className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#1A2530]"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(fact._id, fact.templeId)}
-                          className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-              </div>
+              <FactCard 
+                key={fact._id}
+                fact={fact}
+                onUpdate={handleUpdate}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         )}
-
       </div>
     </div>
   );

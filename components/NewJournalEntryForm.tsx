@@ -142,7 +142,7 @@ export function NewJournalEntryForm() {
           onChange={(e) => setVisitDate(e.target.value)}
           aria-invalid={Boolean(fieldErrors.visitDate)}
           aria-describedby={fieldErrors.visitDate ? "visitDate-error" : undefined}
-          className="rounded-lg border border-zinc-300 bg-white text-[#1A2530] px-4 py-2 text-sm focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none"
+          className="rounded-lg border border-zinc-300 bg-white text-[#1A2530] px-4 py-2 text-sm focus:border-[#54410D] focus:ring-2 focus:ring-[#54410D] focus:outline-none"
         />
         {fieldErrors.visitDate && (
           <p id="visitDate-error" className="text-sm text-[#C62828] font-medium" role="alert">
@@ -164,7 +164,7 @@ export function NewJournalEntryForm() {
           placeholder="Reflect on what you experienced during this temple visit..."
           aria-invalid={Boolean(fieldErrors.insights)}
           aria-describedby={fieldErrors.insights ? "insights-error" : undefined}
-          className="resize-y rounded-lg border border-zinc-300 bg-white text-[#1A2530] px-4 py-3 text-sm focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none"
+          className="resize-y rounded-lg border border-zinc-300 bg-white text-[#1A2530] px-4 py-3 text-sm focus:border-[#54410D] focus:ring-2 focus:ring-[#54410D] focus:outline-none"
         />
         {fieldErrors.insights && (
           <p id="insights-error" className="text-sm text-[#C62828] font-medium" role="alert">
@@ -190,7 +190,7 @@ export function NewJournalEntryForm() {
         <button
           type="button"
           onClick={() => router.push("/journal")}
-          className="text-sm font-medium text-zinc-500 hover:text-zinc-800 hover:underline focus:outline-none focus:ring-2 focus:ring-zinc-400 rounded p-0.5"
+          className="text-sm font-medium text-zinc-700 hover:text-zinc-900 hover:underline focus:outline-none focus:ring-2 focus:ring-zinc-600 rounded p-0.5"
         >
           Cancel
         </button>

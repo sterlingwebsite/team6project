@@ -1,4 +1,4 @@
-// components\RegisterForm.tsx
+// components/RegisterForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -59,9 +59,9 @@ export default function RegisterForm() {
 
   return (
     <div className="w-full max-w-md rounded-2xl bg-white p-8 border border-zinc-200 shadow-sm space-y-6">
-      <h1 className="text-center text-3xl font-serif font-bold text-[#1A2530]">
+      <h2 className="text-center text-3xl font-serif font-bold text-[#1A2530]">
         Create an Account
-      </h1>
+      </h2>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <div aria-live="assertive">
@@ -73,7 +73,7 @@ export default function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="username" className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
+          <label htmlFor="username" className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-1.5">
             Username
           </label>
           <input
@@ -84,12 +84,12 @@ export default function RegisterForm() {
             placeholder="Choose a username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
+            className="w-full px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#6E5611] focus:border-[#6E5611] focus:outline-none transition-all disabled:opacity-50"
           />
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
+          <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-1.5">
             Email Address
           </label>
           <input
@@ -100,12 +100,12 @@ export default function RegisterForm() {
             placeholder="username@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
+            className="w-full px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#6E5611] focus:border-[#6E5611] focus:outline-none transition-all disabled:opacity-50"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
+          <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-1.5">
             Password
           </label>
           <input
@@ -116,12 +116,12 @@ export default function RegisterForm() {
             placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
+            className="w-full px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#6E5611] focus:border-[#6E5611] focus:outline-none transition-all disabled:opacity-50"
           />
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1.5">
+          <label htmlFor="confirmPassword" className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-1.5">
             Confirm Password
           </label>
           <input
@@ -132,7 +132,7 @@ export default function RegisterForm() {
             placeholder="••••••••"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
+            className="w-full px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#6E5611] focus:border-[#6E5611] focus:outline-none transition-all disabled:opacity-50"
           />
         </div>
 
@@ -149,11 +149,11 @@ export default function RegisterForm() {
         </button>
       </form>
 
-      <p className="text-center pt-2 border-t border-zinc-100 text-sm text-zinc-500">
+      <p className="text-center pt-4 border-t border-zinc-100 text-sm text-zinc-600">
         Already have an account?{" "}
         <Link
           href="/auth/login"
-          className="font-semibold text-[#9A7B1C] hover:underline focus:outline-2 focus:outline-offset-2 focus:outline-[#9A7B1C]"
+          className="font-semibold text-[#6E5611] hover:underline focus:outline-2 focus:outline-offset-2 focus:outline-[#6E5611]"
         >
           Sign In
         </Link>

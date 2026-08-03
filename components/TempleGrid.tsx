@@ -1,8 +1,9 @@
-// components\TempleGrid.tsx
+// components/TempleGrid.tsx
 'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; // Integrated native optimization component
 import { ITemple } from '../utils/templeHelpers';
 
 interface IPaginatedTemple extends ITemple {
@@ -36,9 +37,10 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
           placeholder="e.g., Aba Nigeria, Salt Lake..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none text-gray-900 bg-white"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#6E5611] focus:border-[#6E5611] focus:outline-none text-gray-900 bg-white"
         />
-        <p className="text-xs text-gray-400 mt-1" aria-live="polite">
+        {/* Boosted search meta status text string from gray-400 to gray-600 */}
+        <p className="text-xs text-gray-600 mt-1" aria-live="polite">
           Showing {filteredTemples.length} of {initialTemples.length} records matching criteria
         </p>
       </div>
@@ -60,44 +62,51 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
               <Link 
                 href={`/temples/${targetId}`} 
                 key={temple.slug ? `${temple.slug}-${index}` : `grid-${index}`}
-                className="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md focus-within:ring-2 focus-within:ring-[#9A7B1C] focus-within:outline-none transition-all duration-200 flex flex-col justify-between"
+                className="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md focus-within:ring-2 focus-within:ring-[#6E5611] focus-within:outline-none transition-all duration-200 flex flex-col justify-between"
               >
                 <div>
                   <div className="relative h-48 w-full bg-gray-50 overflow-hidden flex items-center justify-center">
                     {hasImage ? (
-                      <img 
+                      <Image 
                         src={imageUrl} 
-                        alt={temple.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        alt={temple.name || "Temple Illustration"}
+                        fill
+                        sizes="(max-w-640px) 100vw, (max-w-768px) 50vw, (max-w-1024px) 33vw, 25vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-200"
                         onError={() => setBrokenImages(prev => ({ ...prev, [temple.slug || index]: true }))}
                       />
                     ) : (
                       <div className="flex flex-col items-center justify-center w-full h-full p-4 bg-gray-50 text-center">
-                        <span className="text-3xl mb-1 text-[#9A7B1C]" aria-hidden="true">🏛️</span>
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-2 line-clamp-2">{temple.name}</p>
+                        {/* Swapped decoration icon coloring to #6E5611 */}
+                        <span className="text-3xl mb-1 text-[#6E5611]" aria-hidden="true">🏛️</span>
+                        {/* Boosted label text from text-gray-400 to text-gray-600 */}
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider px-2 line-clamp-2">{temple.name}</p>
                       </div>
                     )}
                     
-                    <span className={`absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      temple.status === 'Dedicated' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
+                    {/* Darkened status badge background schemes to pass text readable contrast filters cleanly */}
+                    <span className={`absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full z-10 ${
+                      temple.status === 'Dedicated' ? 'bg-green-200 text-green-900' : 'bg-amber-200 text-amber-900'
                     }`}>
                       {temple.status}
                     </span>
                   </div>
 
                   <div className="p-5">
-                    <h3 className="font-serif font-bold text-lg text-[#1A2530] line-clamp-1 group-hover:text-[#9A7B1C] transition-colors">
+                    {/* Swapped active heading hover colors to #6E5611 */}
+                    <h3 className="font-serif font-bold text-lg text-[#1A2530] line-clamp-1 group-hover:text-[#6E5611] transition-colors">
                       {temple.name}
                     </h3>
-                    <p className="text-sm text-gray-500 mt-1">
+                    {/* Boosted copy layout text from text-gray-500 to text-gray-600 */}
+                    <p className="text-sm text-gray-600 mt-1">
                       {temple.city}{temple.state ? `, ${temple.state}` : ''}, {temple.country}
                     </p>
                   </div>
                 </div>
 
                 <div className="p-5 pt-0">
-                  <span className="inline-flex items-center text-sm font-medium text-[#9A7B1C] group-hover:underline">
+                  {/* Swapped inline trigger action item colors to #6E5611 */}
+                  <span className="inline-flex items-center text-sm font-medium text-[#6E5611] group-hover:underline">
                     View Journal & Details →
                   </span>
                 </div>

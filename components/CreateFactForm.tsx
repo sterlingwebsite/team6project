@@ -69,12 +69,12 @@ export default function CreateFactForm({ templeId, onSuccess }: CreateFactFormPr
           value={newFactText}
           onChange={(e) => setNewFactText(e.target.value)}
           disabled={submitting}
-          className="flex-grow px-4 py-2.5 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
+          className="flex-grow px-4 py-2.5 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#54410D] focus:border-[#54410D] focus:outline-none transition-all disabled:bg-zinc-100 disabled:text-zinc-500"
         />
         <button
           type="submit"
           disabled={submitting || !newFactText.trim()}
-          className="bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] font-semibold px-6 py-2.5 rounded-lg text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
+          className="bg-[#1A2530] text-white hover:bg-zinc-800 disabled:bg-zinc-200 disabled:hover:bg-zinc-200 disabled:text-zinc-700 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] font-semibold px-6 py-2.5 rounded-lg text-sm transition-all disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
         >
           {submitting ? "Submitting..." : "Submit Fact"}
         </button>

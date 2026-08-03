@@ -1,4 +1,4 @@
-// components\NavLinks.tsx
+// components/NavLinks.tsx
 'use client';
 
 import Link from 'next/link';
@@ -23,10 +23,11 @@ export default function NavLinks() {
           <Link
             key={link.href}
             href={link.href}
-            className={`text-sm font-semibold tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-[#7C6214] rounded px-1.5 py-0.5 ${
+            aria-current={isActive ? 'page' : undefined}
+            className={`text-sm font-semibold tracking-wide transition-colors focus:outline-none focus:ring-2 focus:ring-[#54410D] rounded px-1.5 py-0.5 ${
               isActive 
-                ? 'text-[#7C6214] border-b-2 border-[#7C6214]' 
-                : 'text-zinc-700 hover:text-[#7C6214]'
+                ? 'text-[#54410D] border-b-2 border-[#54410D]' 
+                : 'text-zinc-700 hover:text-[#54410D]'
             }`}
           >
             {link.label}

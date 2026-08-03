@@ -1,8 +1,9 @@
-// app\temples\page.tsx
+// app/temples/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; 
 import { ITemple } from '@/utils/templeHelpers';
 
 interface IPaginatedTemple extends ITemple {
@@ -67,9 +68,9 @@ export default function TemplesPage() {
             placeholder="Search e.g., Aba Nigeria, Salt Lake..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none text-gray-900 bg-white"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#6E5611] focus:border-[#6E5611] focus:outline-none text-gray-900 bg-white"
           />
-          <p className="text-xs text-gray-400 mt-1" aria-live="polite">
+          <p className="text-xs text-gray-600 mt-1" aria-live="polite">
             {loading ? "Updating results..." : `Found ${totalCount} matching temples`}
           </p>
         </div>
@@ -91,48 +92,54 @@ export default function TemplesPage() {
                 const itemKey = temple._id ? `temple-${temple._id}` : `temple-${index}`;
                 const targetId = temple._id || temple.slug;
 
+                // 💡 Flag the first row of items (index 0-3) as above-the-fold content
+                const isAboveTheFold = index < 4;
+
                 return (
                   <Link 
                     href={`/temples/${targetId}`} 
                     key={itemKey}
-                    className="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md focus-within:ring-2 focus-within:ring-[#9A7B1C] focus-within:outline-none transition-shadow duration-200 flex flex-col justify-between"
+                    className="group bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md focus-within:ring-2 focus-within:ring-[#6E5611] focus-within:outline-none transition-shadow duration-200 flex flex-col justify-between"
                   >
                     <div>
                       <div className="relative h-48 w-full bg-gray-50 overflow-hidden flex items-center justify-center">
                         {hasImage ? (
-                          <img 
+                          <Image 
                             src={imageUrl} 
-                            alt={temple.name}
-                            loading="lazy"
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            alt={temple.name || "Temple Illustration"}
+                            fill
+                            sizes="(max-w-640px) 100vw, (max-w-768px) 50vw, 300px"
+                            quality={60}
+                            priority={isAboveTheFold}
+                            className="object-cover group-hover:scale-105 transition-transform duration-200"
                             onError={() => setBrokenImages(prev => ({ ...prev, [temple.slug || index]: true }))}
                           />
                         ) : (
                           <div className="flex flex-col items-center justify-center w-full h-full p-4 bg-gray-50 text-center">
-                            <span className="text-3xl mb-1 text-[#9A7B1C]" aria-hidden="true">🏛️</span>
-                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-2 line-clamp-2">{temple.name}</p>
+                            <span className="text-3xl mb-1 text-[#6E5611]" aria-hidden="true">🏛️</span>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider px-2 line-clamp-2">{temple.name}</p>
                           </div>
                         )}
-                        <span className={`absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full ${
-                          temple.status === 'Dedicated' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
+                        <span className={`absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full z-10 ${
+                          temple.status === 'Dedicated' ? 'bg-green-200 text-green-900' : 'bg-amber-200 text-amber-900'
                         }`}>
                           {temple.status}
                         </span>
                       </div>
 
                       <div className="p-5">
-                        <h3 className="font-serif font-bold text-lg text-[#1A2530] line-clamp-1 group-hover:text-[#9A7B1C] transition-colors">
+                        <h2 className="font-serif font-bold text-lg text-[#1A2530] line-clamp-1 group-hover:text-[#6E5611] transition-colors">
                           {temple.name}
-                        </h3>
+                        </h2>
                         
-                        <p className="text-xs text-amber-800 font-medium italic mt-3 pt-2 border-t border-gray-100 line-clamp-2">
+                        <p className="text-xs text-amber-900 font-medium italic mt-3 pt-2 border-t border-gray-100 line-clamp-2">
                           💡 Fact: &quot;{temple.mostLikedFact || 'Explore historical community insights inside.'}&quot;
                         </p>
                       </div>
                     </div>
 
                     <div className="p-5 pt-0">
-                      <span className="inline-flex items-center text-sm font-medium text-[#9A7B1C] group-hover:underline">
+                      <span className="inline-flex items-center text-sm font-medium text-[#6E5611] group-hover:underline">
                         View Journal & Details →
                       </span>
                     </div>
@@ -148,7 +155,7 @@ export default function TemplesPage() {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 disabled={page === 1}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none transition-colors"
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-[#6E5611] focus:outline-none transition-colors"
               >
                 ← Previous
               </button>
@@ -163,7 +170,7 @@ export default function TemplesPage() {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 disabled={page === totalPages}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none transition-colors"
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-[#6E5611] focus:outline-none transition-colors"
               >
                 Next →
               </button>
