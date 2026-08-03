@@ -1,3 +1,4 @@
+// app/api/temples/route.ts
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { generateTempleSlug } from "@/utils/templeHelpers";
@@ -30,12 +31,23 @@ export async function GET(request: Request) {
       rawTemples.map(async (temple: any) => {
         const fallbackSlug = temple.slug || generateTempleSlug(temple.name);
         
+        // --- 1. CRITICAL DATA NORMALIZATION FOR FRONTEND CARDS ---
+        // Guarantees an explicit identifier parameter always maps cleanly to target _id properties expected by link hooks
+        const standardizedId = temple._id || temple.id?.toString() || fallbackSlug;
+        
         let topFact = "Explore historical community insights inside.";
         try {
           const queryIdentifier = fallbackSlug || temple.id?.toString();
           
           const bestFact = await db.collection("templeFacts")
-            .find({ $or: [{ templeSlug: queryIdentifier }, { templeId: queryIdentifier }] })
+            .find({ 
+              $or: [
+                { templeSlug: queryIdentifier }, 
+                { templeId: queryIdentifier },
+                // Fallback condition to account for standard normalized item match parameters strings
+                { templeId: standardizedId }
+              ] 
+            })
             .sort({ likesCount: -1 })
             .limit(1)
             .toArray();
@@ -49,6 +61,8 @@ export async function GET(request: Request) {
 
         return {
           ...temple,
+          // Expose standard standardized keys so your frontend item loop properties never map as undefined
+          _id: standardizedId,
           slug: fallbackSlug,
           mostLikedFact: topFact
         };

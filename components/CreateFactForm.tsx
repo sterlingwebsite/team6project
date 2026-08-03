@@ -1,4 +1,3 @@
-// components/CreateFactForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -11,10 +10,19 @@ interface CreateFactFormProps {
 export default function CreateFactForm({ templeId, onSuccess }: CreateFactFormProps) {
   const [newFactText, setNewFactText] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  // Added error message state feedback to satisfy dynamic UX requirements
+  const [errorAlert, setErrorAlert] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorAlert(null);
     if (!newFactText.trim()) return;
+
+    if (newFactText.trim().length < 5) {
+      setErrorAlert("Fact description details must contain at least 5 characters.");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -24,37 +32,54 @@ export default function CreateFactForm({ templeId, onSuccess }: CreateFactFormPr
         body: JSON.stringify({ text: newFactText.trim() })
       });
 
+      const data = await res.json().catch(() => ({}));
+
       if (res.ok) {
         setNewFactText('');
         await onSuccess();
       } else {
-        alert('Failed to register fact. Please check your session state.');
+        setErrorAlert(data.error || 'Failed to register fact. Please check your session state.');
       }
     } catch (err) {
       console.error(err);
+      setErrorAlert('Network transmission failure. Please check your connectivity and try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <section className="bg-white border border-zinc-200 p-6 rounded-2xl shadow-sm space-y-4">
+    <section className="bg-white border border-zinc-200 p-6 rounded-2xl shadow-sm space-y-4" aria-label="Contribute Historical Insight Form">
       <h3 className="text-xs font-bold text-[#1A2530] uppercase tracking-wider">Contribute Historical Fact</h3>
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+      
+      {/* Screen Reader accessible error container window block */}
+      <div aria-live="assertive">
+        {errorAlert && (
+          <p className="text-xs text-[#C62828] font-semibold bg-red-50 p-2.5 border border-red-200 rounded-lg">
+            ⚠️ {errorAlert}
+          </p>
+        )}
+      </div>
+
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col sm:flex-row gap-3">
+        <label htmlFor="newFactText" className="sr-only">Historical Fact Description</label>
         <input
+          id="newFactText"
           type="text"
           placeholder="e.g., This house of the Lord stands on a historic hill site..."
           value={newFactText}
           onChange={(e) => setNewFactText(e.target.value)}
           disabled={submitting}
-          className="flex-grow px-4 py-2.5 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37] transition-all disabled:opacity-50"
+          // Darkened active text highlights to #9A7B1C gold values to pass AA guidelines cleanly
+          className="flex-grow px-4 py-2.5 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none transition-all disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={submitting || !newFactText.trim()}
-          className="bg-[#D4AF37] text-white hover:bg-[#bfa032] font-semibold px-6 py-2.5 rounded-lg text-sm transition-all disabled:opacity-50 shadow-sm whitespace-nowrap"
+          // Changed CTA background color to deep slate #1A2530 to guarantee full WCAG AAA approval
+          className="bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] font-semibold px-6 py-2.5 rounded-lg text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm whitespace-nowrap"
         >
-          Submit Fact
+          {submitting ? "Submitting..." : "Submit Fact"}
         </button>
       </form>
     </section>

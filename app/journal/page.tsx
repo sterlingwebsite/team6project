@@ -142,13 +142,13 @@ export default function JournalListPage() {
 
                 <div className="flex items-center gap-2 self-end md:self-center w-full md:w-auto justify-end border-t md:border-t-0 pt-3 md:pt-0 border-zinc-100">
                   <Link
-                    href={`/journal/${entry._id}`}
+                    href={`/journal/view/${entry._id}`}
                     className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#1A2530]"
                   >
                     View
                   </Link>
                   <Link
-                    href={`/journal/${entry._id}/edit`}
+                    href={`/journal/edit/${entry._id}`}
                     className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-white bg-[#1A2530] hover:bg-zinc-800 transition-colors focus:ring-2 focus:ring-[#1A2530]"
                   >
                     Edit

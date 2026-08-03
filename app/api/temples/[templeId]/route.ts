@@ -1,6 +1,17 @@
 // app/api/temples/[templeId]/route.ts
 import { NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
 import clientPromise from '@/lib/mongodb';
+
+// Define a safe local interface that allows optional tracking ids for unseeded fallback objects
+interface ITempleDocument {
+  _id?: string | ObjectId;
+  name: string;
+  slug: string;
+  status?: string;
+  image?: any;
+  imageUrl?: string;
+}
 
 export async function GET(
   request: Request,
@@ -12,44 +23,63 @@ export async function GET(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || "team6project");
 
-    const temple = await db.collection('temples').findOne({
-      $or: [
-        { slug: templeId },
-        { id: templeId },
-        { name: { $regex: new RegExp(`^${templeId.replace(/-/g, ' ')}$`, 'i') } }
-      ]
+    // 1. Defensively build our query filters
+    const queryConditions: any[] = [
+      { slug: templeId },
+      { id: templeId },
+      { name: { $regex: new RegExp(`^${templeId.replace(/-/g, ' ')}$`, 'i') } }
+    ];
+
+    // Only append the _id parameter lookups if the incoming parameter string matches standard BSON parameters sizes
+    if (ObjectId.isValid(templeId)) {
+      queryConditions.push({ _id: new ObjectId(templeId) });
+    }
+
+    const localRecord = await db.collection('temples').findOne({
+      $or: queryConditions
     });
 
-    if (!temple) {
-      return NextResponse.json(
-        { error: `Temple profile matching "${templeId}" not found in database.` },
-        { status: 404 }
-      );
+    // 2. Initialize our tracking reference variable using our explicit local interface structure
+    let temple: ITempleDocument | null = null;
+
+    if (localRecord) {
+      // Safely map the raw document database properties across
+      temple = {
+        _id: localRecord._id,
+        name: localRecord.name,
+        slug: localRecord.slug,
+        status: localRecord.status,
+        image: localRecord.image,
+        imageUrl: localRecord.imageUrl
+      };
+    } else {
+      console.warn(`[API Notice] Temple "${templeId}" not found in local collections. Attempting live remote proxy fallback...`);
+      // Assign fallback placeholder parameters safely satisfying interface options constraints
+      temple = { 
+        name: templeId.replace(/-/g, ' '), 
+        slug: templeId 
+      };
     }
 
-    if (temple.imageUrl) {
-      try {
-        const decoded = decodeURIComponent(temple.imageUrl);
-        temple.imageUrl = decoded.replace(/^https:\/\/templedb\.org\//, "");
-      } catch {
-      }
-    }
-
+    // 3. Fetch remote TempleDB API records to enrich or fill data layers
     try {
       const cleanSearchTerm = templeId.replace(/-/g, ' ');
       const remoteRes = await fetch(
-        `https://templedb.org/api/temples?search=${encodeURIComponent(cleanSearchTerm)}`
+        `https://www.templedb.org/api/temples?search=${encodeURIComponent(cleanSearchTerm)}`
       );
 
-      if (remoteRes.ok) {
+      if (remoteRes.ok && temple) {
         const remoteData = await remoteRes.json();
         const list = remoteData.temples || remoteData.data || [];
 
         const remoteMatched =
-          list.find((t: any) => t.slug === templeId || t.id?.toString() === templeId) ||
+          list.find((t: any) => t.slug === templeId || t.id?.toString() === templeId || t.name?.toLowerCase() === cleanSearchTerm.toLowerCase()) ||
           list[0];
 
         if (remoteMatched) {
+          temple.name = temple.name || remoteMatched.name;
+          temple.status = temple.status || remoteMatched.status || "Dedicated";
+          
           if (remoteMatched.image) {
             temple.image = remoteMatched.image;
           }
@@ -57,7 +87,7 @@ export async function GET(
           if (remoteMatched.imageUrl) {
             try {
               const decoded = decodeURIComponent(remoteMatched.imageUrl);
-              temple.imageUrl = decoded.replace(/^https:\/\/templedb\.org\//, "");
+              temple.imageUrl = decoded.startsWith('http') ? decoded : `https://templedb.org${decoded.startsWith('/') ? '' : '/'}${decoded}`;
             } catch {
               temple.imageUrl = remoteMatched.imageUrl;
             }
@@ -66,6 +96,14 @@ export async function GET(
       }
     } catch (fetchError) {
       console.error("[API Warning] Remote TempleDB fetch failed:", fetchError);
+    }
+
+    // Guard: Verify if the template holds valid property metrics before packing
+    if (!temple || !temple.name || (!temple.image && !temple.imageUrl)) {
+      return NextResponse.json(
+        { error: `Temple profile matching "${templeId}" could not be resolved from local or remote assets.` },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(temple);

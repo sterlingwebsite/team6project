@@ -27,7 +27,8 @@ export default function JournalDetailPage({ params }: PageProps) {
   useEffect(() => {
     async function loadSingleLog() {
       try {
-        const response = await fetch(`/api/journal/${id}`);
+        // Rerouted the backend data lookup target to pass the object ID as a URL query parameter string
+        const response = await fetch(`/api/journal?id=${id}`);
         if (response.status === 401 || response.status === 403) {
           setError('Unauthorized. You do not have ownership privileges to read this record.');
           return;
@@ -35,8 +36,19 @@ export default function JournalDetailPage({ params }: PageProps) {
         if (!response.ok) {
           throw new Error('Target document lookup failed.');
         }
+        
         const data = await response.json();
-        setEntry(data);
+        
+        // Find the specific item matching the dynamic ID parameters inside the returned array data stream
+        const activeEntry = Array.isArray(data) 
+          ? data.find((item: IJournalEntry) => item._id === id) 
+          : data;
+
+        if (!activeEntry) {
+          throw new Error('Target journal item record not found inside collection.');
+        }
+
+        setEntry(activeEntry);
       } catch (err) {
         console.error("Detailed entry fetch error:", err);
         setError('We couldn’t retrieve this journal entry. It may have been removed.');
@@ -50,7 +62,8 @@ export default function JournalDetailPage({ params }: PageProps) {
   const handleDelete = async () => {
     if (!confirm('Are you certain you want to permanently delete this journal entry?')) return;
     try {
-      const response = await fetch(`/api/journal/${id}`, { method: 'DELETE' });
+      // Adjusted endpoint parameters string to target our unified central backend DELETE route helper safely
+      const response = await fetch(`/api/journal?id=${id}`, { method: 'DELETE' });
       if (response.ok) {
         router.push('/journal');
       } else {
@@ -75,7 +88,8 @@ export default function JournalDetailPage({ params }: PageProps) {
         <div className="w-full max-w-xl bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl text-center text-sm font-medium shadow-sm mb-4">
           ❌ {error || 'Journal entry not found.'}
         </div>
-        <Link href="/journal" className="text-sm font-semibold text-[#D4AF37] hover:underline">
+        {/* Darkened text link to #9A7B1C and added explicit interactive focus boxes to satisfy strict WCAG checks */}
+        <Link href="/journal" className="text-sm font-semibold text-[#9A7B1C] hover:underline focus:outline-none focus:ring-2 focus:ring-[#9A7B1C] rounded p-0.5">
           ← Return to Journal List
         </Link>
       </div>
@@ -87,19 +101,21 @@ export default function JournalDetailPage({ params }: PageProps) {
       <div className="w-full max-w-2xl bg-white border border-zinc-200 rounded-2xl p-8 shadow-sm space-y-6">
         
         <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
-          <Link href="/journal" className="text-xs font-bold text-zinc-400 uppercase tracking-wider hover:text-[#D4AF37] transition-colors">
+          {/* Darkened state actions and hover transitions for WCAG compliance */}
+          <Link href="/journal" className="text-xs font-bold text-zinc-400 uppercase tracking-wider hover:text-[#9A7B1C] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-400 rounded">
             ← Back to Journal
           </Link>
           <div className="flex items-center gap-2">
+            {/* Updated path configuration pattern to route link structures to the correct subfolder action layout map */}
             <Link
-              href={`/journal/${id}/edit`}
-              className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors"
+              href={`/journal/edit/${id}`}
+              className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#1A2530]"
             >
               Edit Log
             </Link>
             <button
               onClick={handleDelete}
-              className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+              className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"
             >
               Delete
             </button>
@@ -107,14 +123,15 @@ export default function JournalDetailPage({ params }: PageProps) {
         </div>
 
         <div className="space-y-1">
-          <p className="text-xs font-bold text-[#D4AF37] uppercase tracking-widest">
+          {/* Darkened tag headers accent text color to #9A7B1C */}
+          <p className="text-xs font-bold text-[#9A7B1C] uppercase tracking-widest">
             Spiritual Reflection Log
           </p>
           <h1 className="text-3xl font-serif font-bold text-[#1A2530]">
             {entry.templeName}
           </h1>
           <p className="text-sm font-medium text-zinc-400 pt-1">
-            📅 Visited on {new Date(entry.visitDate).toLocaleDateString(undefined, { dateStyle: 'full' })}
+            📅 Visited on {new Date(entry.visitDate).toLocaleDateString(undefined, { dateStyle: 'full', timeZone: 'UTC' })}
           </p>
         </div>
 

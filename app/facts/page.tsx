@@ -1,3 +1,4 @@
+// app\facts\page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -99,7 +100,7 @@ export default function UserFactsPage() {
           </div>
           <Link
             href="/temples"
-            className="inline-flex items-center justify-center bg-[#1A2530] text-white hover:bg-zinc-800 px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all"
+            className="inline-flex items-center justify-center bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all"
           >
             🏛️ Browse Temples
           </Link>
@@ -112,14 +113,15 @@ export default function UserFactsPage() {
         ) : facts.length === 0 ? (
           
           <div className="bg-white border border-zinc-200 rounded-xl p-12 text-center max-w-xl mx-auto space-y-4 shadow-sm">
-            <span className="text-4xl block">💡</span>
+            <span className="text-4xl block" aria-hidden="true">💡</span>
             <h3 className="text-lg font-semibold text-[#1A2530]">No contributions tracked yet</h3>
             <p className="text-sm text-zinc-400 max-w-xs mx-auto leading-relaxed">
               When you add historical milestones or unique architectural features directly to individual temple profile screens, they will aggregate inside this management pane.
             </p>
+            {/* Swapped style background to high-contrast dark blue layout brand parameters to clear WCAG audits */}
             <Link
               href="/temples"
-              className="inline-block bg-[#D4AF37] text-white hover:bg-[#bfa032] px-5 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm"
+              className="inline-block bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] px-5 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm"
             >
               Explore Directory & Contribute
             </Link>
@@ -134,17 +136,18 @@ export default function UserFactsPage() {
               >
                 <div className="flex flex-wrap items-center justify-between border-b border-zinc-100 pb-3 gap-2">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-base">🏛️</span>
+                    <span className="text-base" aria-hidden="true">🏛️</span>
+                    {/* Shifted active text hover attributes to rich accessible #9A7B1C gold values */}
                     <Link 
                       href={`/temples/${fact.templeId}`}
-                      className="font-serif font-bold text-base text-[#1A2530] hover:text-[#D4AF37] transition-all hover:underline"
+                      className="font-serif font-bold text-base text-[#1A2530] hover:text-[#9A7B1C] transition-all hover:underline focus:ring-2 focus:ring-[#9A7B1C] rounded p-0.5"
                     >
                       {fact.templeName || 'View Temple Details'}
                     </Link>
                   </div>
                   <div className="flex items-center gap-3 text-xs font-semibold text-zinc-400">
                     <span>👍 {fact.likesCount || 0} Peer Votes</span>
-                    <span>• Added {new Date(fact.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}</span>
+                    <span>• Added {new Date(fact.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium', timeZone: 'UTC' })}</span>
                   </div>
                 </div>
 
@@ -155,18 +158,19 @@ export default function UserFactsPage() {
                         type="text"
                         value={editingText}
                         onChange={(e) => setEditingText(e.target.value)}
-                        className="flex-grow px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#D4AF37] focus:border-[#D4AF37]"
+                        // Updated input ring boundaries to use compliant tracking layouts
+                        className="flex-grow px-4 py-2 border border-zinc-300 rounded-lg text-sm text-gray-900 bg-white focus:ring-2 focus:ring-[#9A7B1C] focus:border-[#9A7B1C] focus:outline-none"
                       />
                       <div className="flex gap-2 justify-end">
                         <button 
                           onClick={() => handleUpdate(fact._id, fact.templeId)}
-                          className="text-xs bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 font-semibold shadow-sm"
+                          className="text-xs bg-green-700 text-white px-3 py-2 rounded-lg hover:bg-green-800 focus:ring-2 focus:ring-green-700 font-semibold shadow-sm"
                         >
                           Save
                         </button>
                         <button 
                           onClick={() => { setEditingId(null); setEditingText(''); }}
-                          className="text-xs bg-zinc-100 text-zinc-600 px-3 py-2 rounded-lg hover:bg-zinc-200 font-semibold border border-zinc-200"
+                          className="text-xs bg-zinc-100 text-zinc-600 px-3 py-2 rounded-lg hover:bg-zinc-200 focus:ring-2 focus:ring-zinc-400 font-semibold border border-zinc-200"
                         >
                           Cancel
                         </button>
@@ -180,13 +184,14 @@ export default function UserFactsPage() {
                       <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                         <button
                           onClick={() => { setEditingId(fact._id); setEditingText(fact.text); }}
-                          className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors"
+                          className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-colors focus:ring-2 focus:ring-[#1A2530]"
                         >
                           Edit
                         </button>
+                        {/* Corrected truncated code syntax block down below safely */}
                         <button
                           onClick={() => handleDelete(fact._id, fact.templeId)}
-                          className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+                          className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-600 bg-red-50 hover:bg-red-100 transition-colors focus:ring-2 focus:ring-red-600"
                         >
                           Delete
                         </button>
@@ -199,6 +204,7 @@ export default function UserFactsPage() {
             ))}
           </div>
         )}
+
       </div>
     </div>
   );

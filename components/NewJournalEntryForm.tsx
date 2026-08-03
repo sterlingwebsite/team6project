@@ -1,3 +1,4 @@
+// app/journal/new/NewJournalEntryForm.tsx
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
@@ -27,9 +28,7 @@ export function NewJournalEntryForm() {
   const router = useRouter();
 
   const [temples, setTemples] = useState<Temple[]>([]);
-  const [templesStatus, setTemplesStatus] = useState<
-    "loading" | "ready" | "error"
-  >("loading");
+  const [templesStatus, setTemplesStatus] = useState<"loading" | "ready" | "error">("loading");
 
   const [templeId, setTempleId] = useState("");
   const [visitDate, setVisitDate] = useState("");
@@ -65,19 +64,15 @@ export function NewJournalEntryForm() {
   function validate(): FieldErrors {
     const errors: FieldErrors = {};
 
-    if (!templeId) {
-      errors.templeId = "Please select a temple.";
-    }
-
+    if (!templeId) errors.templeId = "Please select a temple.";
+    
     if (!visitDate) {
       errors.visitDate = "Please enter a visit date.";
     } else if (visitDate > today()) {
       errors.visitDate = "Visit date cannot be in the future.";
     }
 
-    if (!insights.trim()) {
-      errors.insights = "Please share a spiritual insight from your visit.";
-    }
+    if (!insights.trim()) errors.insights = "Please share a spiritual insight from your visit.";
 
     return errors;
   }
@@ -88,9 +83,7 @@ export function NewJournalEntryForm() {
 
     const errors = validate();
     setFieldErrors(errors);
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
+    if (Object.keys(errors).length > 0) return;
 
     setSubmitting(true);
     try {
@@ -110,10 +103,9 @@ export function NewJournalEntryForm() {
       }
 
       router.push("/journal");
+      router.refresh();
     } catch (err) {
-      setSubmitError(
-        err instanceof Error ? err.message : "Failed to save your journal entry."
-      );
+      setSubmitError(err instanceof Error ? err.message : "Failed to save your journal entry.");
       setSubmitting(false);
     }
   }
@@ -121,11 +113,8 @@ export function NewJournalEntryForm() {
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <label
-          htmlFor="templeId"
-          className="text-sm font-medium text-[#1A2530] dark:text-zinc-200"
-        >
-          Temple
+        <label htmlFor="templeId" className="text-sm font-semibold text-[#1A2530] dark:text-zinc-200">
+          Select Temple
         </label>
         {templesStatus === "error" ? (
           <p className="text-sm text-[#C62828]" role="alert">
@@ -139,15 +128,11 @@ export function NewJournalEntryForm() {
             onChange={(e) => setTempleId(e.target.value)}
             disabled={templesStatus === "loading"}
             aria-invalid={Boolean(fieldErrors.templeId)}
-            aria-describedby={
-              fieldErrors.templeId ? "templeId-error" : undefined
-            }
-            className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:outline-none focus:ring-1 focus:ring-[#9A7B1C] disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+            aria-describedby={fieldErrors.templeId ? "templeId-error" : undefined}
+            className="rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
           >
             <option value="" disabled>
-              {templesStatus === "loading"
-                ? "Loading temples..."
-                : "Select a temple"}
+              {templesStatus === "loading" ? "Loading temples..." : "Click to select a temple location"}
             </option>
             {temples.map((temple) => (
               <option key={temple._id} value={temple._id}>
@@ -157,18 +142,15 @@ export function NewJournalEntryForm() {
           </select>
         )}
         {fieldErrors.templeId && (
-          <p id="templeId-error" className="text-sm text-[#C62828]" role="alert">
-            {fieldErrors.templeId}
+          <p id="templeId-error" className="text-sm text-[#C62828] font-medium" role="alert">
+            ⚠️ {fieldErrors.templeId}
           </p>
         )}
       </div>
 
       <div className="flex flex-col gap-2">
-        <label
-          htmlFor="visitDate"
-          className="text-sm font-medium text-[#1A2530] dark:text-zinc-200"
-        >
-          Entry date
+        <label htmlFor="visitDate" className="text-sm font-semibold text-[#1A2530] dark:text-zinc-200">
+          Date of Visit
         </label>
         <input
           id="visitDate"
@@ -178,24 +160,19 @@ export function NewJournalEntryForm() {
           max={today()}
           onChange={(e) => setVisitDate(e.target.value)}
           aria-invalid={Boolean(fieldErrors.visitDate)}
-          aria-describedby={
-            fieldErrors.visitDate ? "visitDate-error" : undefined
-          }
-          className="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:outline-none focus:ring-1 focus:ring-[#9A7B1C] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          aria-describedby={fieldErrors.visitDate ? "visitDate-error" : undefined}
+          className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
         />
         {fieldErrors.visitDate && (
-          <p id="visitDate-error" className="text-sm text-[#C62828]" role="alert">
-            {fieldErrors.visitDate}
+          <p id="visitDate-error" className="text-sm text-[#C62828] font-medium" role="alert">
+            ⚠️ {fieldErrors.visitDate}
           </p>
         )}
       </div>
 
       <div className="flex flex-col gap-2">
-        <label
-          htmlFor="insights"
-          className="text-sm font-medium text-[#1A2530] dark:text-zinc-200"
-        >
-          Spiritual insights
+        <label htmlFor="insights" className="text-sm font-semibold text-[#1A2530] dark:text-zinc-200">
+          Spiritual Insights & Promptings
         </label>
         <textarea
           id="insights"
@@ -203,38 +180,36 @@ export function NewJournalEntryForm() {
           rows={6}
           value={insights}
           onChange={(e) => setInsights(e.target.value)}
-          placeholder="Reflect on what you experienced during this visit..."
+          placeholder="Reflect on what you experienced during this temple visit..."
           aria-invalid={Boolean(fieldErrors.insights)}
-          aria-describedby={
-            fieldErrors.insights ? "insights-error" : undefined
-          }
-          className="resize-y rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:outline-none focus:ring-1 focus:ring-[#9A7B1C] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          aria-describedby={fieldErrors.insights ? "insights-error" : undefined}
+          className="resize-y rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm text-[#1A2530] focus:border-[#9A7B1C] focus:ring-2 focus:ring-[#9A7B1C] focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
         />
         {fieldErrors.insights && (
-          <p id="insights-error" className="text-sm text-[#C62828]" role="alert">
-            {fieldErrors.insights}
+          <p id="insights-error" className="text-sm text-[#C62828] font-medium" role="alert">
+            ⚠️ {fieldErrors.insights}
           </p>
         )}
       </div>
 
       {submitError && (
-        <p className="text-sm text-[#C62828]" role="alert">
-          {submitError}
+        <p className="text-sm text-[#C62828] font-medium text-center bg-red-50 p-2.5 border border-red-200 rounded-lg" role="alert">
+          ❌ {submitError}
         </p>
       )}
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 pt-2">
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-full bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] font-medium px-6 py-2 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-full bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] focus:outline-none font-medium px-6 py-2.5 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-60 shadow-sm"
         >
-          {submitting ? "Saving..." : "Save entry"}
+          {submitting ? "Saving entry..." : "Save Reflection Entry"}
         </button>
         <button
           type="button"
           onClick={() => router.push("/journal")}
-          className="text-sm font-medium text-[#1A2530] hover:underline dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#1A2530] rounded p-0.5"
+          className="text-sm font-medium text-zinc-500 hover:text-zinc-800 hover:underline focus:outline-none focus:ring-2 focus:ring-zinc-400 rounded p-0.5"
         >
           Cancel
         </button>

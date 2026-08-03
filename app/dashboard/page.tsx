@@ -144,7 +144,7 @@ export default function DashboardPage() {
                     <p className="text-sm text-zinc-500 line-clamp-1 max-w-xl">{entry.insights}</p>
                   </div>
                   <Link 
-                    href={`/journal/${entry._id}`} 
+                    href={`/journal/view/${entry._id}`} 
                     className="text-xs font-semibold px-3 py-1.5 border border-zinc-200 rounded-md text-zinc-600 bg-zinc-50 hover:bg-zinc-100 transition-all text-center w-full sm:w-auto shadow-sm focus:ring-2 focus:ring-[#1A2530]"
                   >
                     Open Full Log

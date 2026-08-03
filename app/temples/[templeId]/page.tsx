@@ -28,9 +28,6 @@ export default function TempleDetailPage({ params }: PageProps) {
 
         if (directoryRes.ok) {
           const matched = await directoryRes.json();
-
-          console.log("Temple payload:", matched);
-
           if (matched && typeof matched === 'object' && !Array.isArray(matched)) {
             setTemple(matched);
           } else {
@@ -58,19 +55,6 @@ export default function TempleDetailPage({ params }: PageProps) {
     loadTempleAndFacts();
   }, [templeId]);
 
-  useEffect(() => {
-    if (temple) {
-      const resolved =
-        temple?.image?.thumb ||
-        temple?.image?.full ||
-        temple?.imageUrl ||
-        (typeof temple?.image === "string" ? temple.image : undefined);
-
-      console.log("Resolved heroImageUrl:", resolved);
-    }
-  }, [temple]);
-
-
   if (loading) {
     return (
       <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
@@ -79,17 +63,18 @@ export default function TempleDetailPage({ params }: PageProps) {
     );
   }
 
-  const rawImageUrl = temple?.imageUrl || temple?.image;
-
-const heroImageUrl = temple?.image?.thumb || temple?.image?.full || temple?.imageUrl;
-
+  // Bulletproof hero image evaluation cascade managing string structures and nested model formats cleanly
+  const heroImageUrl = 
+    typeof temple?.image === 'string' ? temple.image : 
+    temple?.image?.full || temple?.image?.thumb || temple?.imageUrl || null;
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] p-6 md:p-12">
       <div className="max-w-3xl mx-auto space-y-8">
         
-        <nav>
-          <Link href="/temples" className="text-xs font-bold text-zinc-400 uppercase tracking-widest hover:text-[#D4AF37] transition-colors">
+        <nav aria-label="Breadcrumb">
+          {/* Shifted active hover transitions to accessible #9A7B1C gold values to satisfy color audits */}
+          <Link href="/temples" className="text-xs font-bold text-zinc-400 uppercase tracking-widest hover:text-[#9A7B1C] transition-colors focus:outline-none focus:ring-2 focus:ring-[#9A7B1C] rounded p-0.5">
             ← Return to Directory
           </Link>
         </nav>
@@ -107,7 +92,8 @@ const heroImageUrl = temple?.image?.thumb || temple?.image?.full || temple?.imag
 
         <header className="bg-white border border-zinc-200 rounded-2xl p-6 md:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-2">
-            <span className="text-xs font-bold tracking-widest text-[#D4AF37] uppercase">House of the Lord</span>
+            {/* Darkened subtitle branding labels text color parameters to #9A7B1C */}
+            <span className="text-xs font-bold tracking-widest text-[#9A7B1C] uppercase">House of the Lord</span>
             <h1 className="text-3xl font-serif font-bold text-[#1A2530] tracking-tight">
               {temple?.name || 'Temple Details'}
             </h1>
@@ -120,7 +106,7 @@ const heroImageUrl = temple?.image?.thumb || temple?.image?.full || temple?.imag
         </header>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl text-center text-sm font-medium">
+          <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl text-center text-sm font-medium" role="alert">
             {error}
           </div>
         )}
@@ -135,7 +121,7 @@ const heroImageUrl = temple?.image?.thumb || temple?.image?.full || temple?.imag
           }
         }} />
 
-        <section className="space-y-4">
+        <section className="space-y-4" aria-label="Community Historical Insights Grid">
           <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Community Historical Insights ({facts.length})</h3>
           
           {facts.length === 0 ? (

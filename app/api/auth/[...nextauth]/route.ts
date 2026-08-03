@@ -42,6 +42,20 @@ export async function POST(request: NextRequest) {
   const url = new URL(request.url);
   const path = url.pathname;
 
+  // --- NEW INTERCEPTION BLOCK: HANDLE SIGNOUT ACTION PIPELINE ---
+  if (path.endsWith("/signout")) {
+    const response = NextResponse.json({ success: true, message: "Logged out cleanly." }, { status: 200 });
+    
+    // Clear the tracking token session cookie by expiring it instantly on the client
+    response.cookies.set("next-auth.session-token", "", {
+      path: "/",
+      maxAge: 0
+    });
+    
+    return response;
+  }
+  // -------------------------------------------------------------
+
   if (path.includes("/callback/credentials") || path.includes("/signin/credentials") || path.endsWith("/signin")) {
     try {
       let email = "";
