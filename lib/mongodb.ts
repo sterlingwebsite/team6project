@@ -1,7 +1,12 @@
+// lib/mongodb.ts
 import { MongoClient } from 'mongodb';
 
 if (!process.env.MONGODB_URI) {
-  throw new Error('Please add your MONGODB_URI to your .env.local file configuration');
+  throw new Error('Please add your MONGODB_URI parameter to your local or deployment environment.');
+}
+
+if (!process.env.MONGODB_DB) {
+  throw new Error('Please add your MONGODB_DB target catalog name string variable to your environment configuration.');
 }
 
 const uri = process.env.MONGODB_URI;
@@ -11,7 +16,7 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === 'development') {
-  let globalWithMongo = global as typeof globalThis & {
+  const globalWithMongo = global as typeof globalThis & {
     _mongoClientPromise?: Promise<MongoClient>;
   };
 
