@@ -45,7 +45,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 🛠️ OPTIMIZED: Changed grid structure from md:grid-cols-3 to md:grid-cols-2 to perfectly fit the remaining active features */}
         <section className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 mt-4" aria-label="Application Key Features Summary">
           
           <div className="bg-white border border-gray-100 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col items-start">
@@ -62,7 +61,6 @@ export default function LandingPage() {
             </p>
           </div>
 
-          {/* ✂️ Removed "Live Global Analytics" panel block successfully from layout flow */}
 
           <div className="bg-white border border-gray-100 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all flex flex-col items-start">
             <div className="bg-amber-50 p-3 rounded-xl text-[#54410D] mb-6" aria-hidden="true">

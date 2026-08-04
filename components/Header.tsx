@@ -31,7 +31,6 @@ export default function Header() {
       <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-4">
         
         <Link href="/" className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-[#6E5611] rounded p-1">
-          {/* 🛠️ FIX: Swapped out the raw native text emoji for a highly accessible, crisp SVG vector shape */}
           <svg 
             className="w-6 h-6 text-[#6E5611] transition-colors" 
             fill="currentColor" 

@@ -86,7 +86,6 @@ export default function JournalDetailPage({ params }: PageProps) {
         <div className="w-full max-w-xl bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl text-center text-sm font-medium shadow-sm mb-4">
           ❌ {error || 'Journal entry not found.'}
         </div>
-        {/* 🛠️ FIX: Darkened error action links to #54410D for full contrast accessibility compliance */}
         <Link href="/journal" className="text-sm font-semibold text-[#54410D] hover:underline focus:outline-none focus:ring-2 focus:ring-[#54410D] rounded p-0.5">
           ← Return to Journal List
         </Link>
@@ -99,7 +98,6 @@ export default function JournalDetailPage({ params }: PageProps) {
       <div className="w-full max-w-2xl bg-white border border-zinc-200 rounded-2xl p-8 shadow-sm space-y-6">
         
         <div className="flex items-center justify-between border-b border-zinc-100 pb-4">
-          {/* 🛠️ FIX: Replaced low contrast text-zinc-400 and hover links with AAA compliant tokens */}
           <Link href="/journal" className="text-xs font-bold text-zinc-700 uppercase tracking-wider hover:text-[#54410D] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-600 rounded">
             ← Back to Journal
           </Link>
@@ -110,7 +108,6 @@ export default function JournalDetailPage({ params }: PageProps) {
             >
               Edit Log
             </Link>
-            {/* 🛠️ FIX: Darkened button font weight from text-red-600 to text-red-800 over the red-50 backdrop */}
             <button
               onClick={handleDelete}
               className="text-xs font-semibold px-3 py-1.5 border border-transparent rounded-md text-red-800 bg-red-50 hover:bg-red-100 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600"
@@ -121,21 +118,18 @@ export default function JournalDetailPage({ params }: PageProps) {
         </div>
 
         <div className="space-y-1">
-          {/* 🛠️ FIX: Darkened top label from #9A7B1C to #54410D for strict small text threshold filters */}
           <p className="text-xs font-bold text-[#54410D] uppercase tracking-widest">
             Spiritual Reflection Log
           </p>
           <h1 className="text-3xl font-serif font-bold text-[#1A2530]">
             {entry.templeName}
           </h1>
-          {/* 🛠️ FIX: Boosted timestamp subtext contrast from text-zinc-400 to text-zinc-600 */}
           <p className="text-sm font-medium text-zinc-600 pt-1">
             📅 Visited on {new Date(entry.visitDate).toLocaleDateString(undefined, { dateStyle: 'full', timeZone: 'UTC' })}
           </p>
         </div>
 
         <div className="border-t border-zinc-100 pt-6">
-          {/* 🛠️ FIX: Boosted insights block category title header from text-zinc-400 to text-zinc-600 */}
           <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-600 mb-3">
             Personal Thoughts & Spiritual Insights
           </h2>

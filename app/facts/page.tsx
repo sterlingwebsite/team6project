@@ -91,7 +91,6 @@ export default function UserFactsPage() {
             href="/temples"
             className="inline-flex items-center justify-center gap-2 bg-[#1A2530] text-white hover:bg-zinc-800 focus:ring-2 focus:ring-offset-2 focus:ring-[#1A2530] px-4 py-2 rounded-lg text-sm font-semibold shadow-sm transition-all"
           >
-            {/* 🛠️ FIX: Removed the typo and replaced the raw emoji character with a crisp, accessible inline SVG icon */}
             <svg 
               className="w-4 h-4 shrink-0 text-white" 
               fill="currentColor" 

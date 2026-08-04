@@ -58,7 +58,6 @@ export default function LoginForm() {
       </div>
 
       <div>
-        {/* Darkened text-zinc-500 to text-zinc-600 for contrast compliance */}
         <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-zinc-600 mb-1.5">
           Email Address
         </label>

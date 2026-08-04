@@ -33,7 +33,6 @@ export default function FactCard({ fact, onUpdate, onDelete }: FactCardProps) {
     <div className="bg-white border border-zinc-200 p-6 rounded-xl shadow-sm space-y-4 transition-all hover:shadow-md">
       <div className="flex flex-wrap items-center justify-between border-b border-zinc-100 pb-3 gap-2">
         <div className="flex items-center gap-1.5">
-          {/* 🛠️ FIX: Swapped out the raw emoji string for an inline high-contrast SVG vector template shape */}
           <svg 
             className="w-5 h-5 text-[#54410D] shrink-0" 
             fill="currentColor" 

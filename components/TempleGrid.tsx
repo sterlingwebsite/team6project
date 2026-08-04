@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image'; // Integrated native optimization component
+import Image from 'next/image';
 import { ITemple } from '../utils/templeHelpers';
 
 interface IPaginatedTemple extends ITemple {
@@ -39,7 +39,6 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[#6E5611] focus:border-[#6E5611] focus:outline-none text-gray-900 bg-white"
         />
-        {/* Boosted search meta status text string from gray-400 to gray-600 */}
         <p className="text-xs text-gray-600 mt-1" aria-live="polite">
           Showing {filteredTemples.length} of {initialTemples.length} records matching criteria
         </p>
@@ -77,14 +76,11 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
                       />
                     ) : (
                       <div className="flex flex-col items-center justify-center w-full h-full p-4 bg-gray-50 text-center">
-                        {/* Swapped decoration icon coloring to #6E5611 */}
                         <span className="text-3xl mb-1 text-[#6E5611]" aria-hidden="true">🏛️</span>
-                        {/* Boosted label text from text-gray-400 to text-gray-600 */}
                         <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider px-2 line-clamp-2">{temple.name}</p>
                       </div>
                     )}
                     
-                    {/* Darkened status badge background schemes to pass text readable contrast filters cleanly */}
                     <span className={`absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full z-10 ${
                       temple.status === 'Dedicated' ? 'bg-green-200 text-green-900' : 'bg-amber-200 text-amber-900'
                     }`}>
@@ -93,11 +89,9 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
                   </div>
 
                   <div className="p-5">
-                    {/* Swapped active heading hover colors to #6E5611 */}
                     <h3 className="font-serif font-bold text-lg text-[#1A2530] line-clamp-1 group-hover:text-[#6E5611] transition-colors">
                       {temple.name}
                     </h3>
-                    {/* Boosted copy layout text from text-gray-500 to text-gray-600 */}
                     <p className="text-sm text-gray-600 mt-1">
                       {temple.city}{temple.state ? `, ${temple.state}` : ''}, {temple.country}
                     </p>
@@ -105,7 +99,6 @@ export default function TempleGrid({ initialTemples }: TempleGridProps) {
                 </div>
 
                 <div className="p-5 pt-0">
-                  {/* Swapped inline trigger action item colors to #6E5611 */}
                   <span className="inline-flex items-center text-sm font-medium text-[#6E5611] group-hover:underline">
                     View Journal & Details →
                   </span>

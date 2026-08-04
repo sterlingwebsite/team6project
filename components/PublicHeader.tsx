@@ -6,9 +6,7 @@ export default function PublicHeader() {
     <nav className="w-full bg-white border-b border-gray-200 px-6 py-4 shadow-sm" aria-label="Global Landing Header">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
-        {/* 🛠️ FIX: Shifted focus rings and active text hover states to #54410D for full WCAG AAA alignment */}
         <Link href="/" className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-[#54410D] rounded p-1">
-          {/* 🛠️ FIX: Replaced the low-contrast raw emoji string for an inline high-contrast SVG vector shape */}
           <svg 
             className="w-6 h-6 text-[#54410D]" 
             fill="currentColor" 

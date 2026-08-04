@@ -12,7 +12,6 @@ export default function NewJournalEntryPage() {
       <div className="w-full max-w-2xl bg-white border border-zinc-200 rounded-2xl p-8 shadow-sm space-y-6">
         
         <header className="border-b border-zinc-100 pb-4">
-          {/* 🛠️ FIX: Replaced the low-contrast raw pencil emoji with an inline SVG using a > 7:1 contrast ratio */}
           <div className="text-[#54410D] mb-2" aria-hidden="true">
             <svg 
               className="w-8 h-8" 
@@ -32,7 +31,6 @@ export default function NewJournalEntryPage() {
           <h1 className="text-2xl font-serif font-bold text-[#1A2530] mt-2">
             Record a New Milestone
           </h1>
-          {/* 🛠️ FIX: Boosted contrast from text-zinc-500 to text-zinc-600 to satisfy readability thresholds */}
           <p className="text-zinc-600 text-sm mt-1">
             Preserve your attendance dates, unique personal reflections, and spiritual insights.
           </p>

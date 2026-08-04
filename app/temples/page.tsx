@@ -92,7 +92,6 @@ export default function TemplesPage() {
                 const itemKey = temple._id ? `temple-${temple._id}` : `temple-${index}`;
                 const targetId = temple._id || temple.slug;
 
-                // 💡 Flag the first row of items (index 0-3) as above-the-fold content
                 const isAboveTheFold = index < 4;
 
                 return (

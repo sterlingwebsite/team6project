@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    qualities: [60, 75], // 🧠 Fixed: Explicit array values provided to bypass syntax parser crash
+    qualities: [60, 75],
     remotePatterns: [
       {
         protocol: "https",
