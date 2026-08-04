@@ -104,15 +104,16 @@ export default function TemplesPage() {
                       <div className="relative h-48 w-full bg-gray-50 overflow-hidden flex items-center justify-center">
                         {hasImage ? (
                           <Image 
-                          src={imageUrl} 
-                          alt={temple.name || "Temple Illustration"}
-                          width={350}
-                          height={192}
-                          quality={60}
-                          priority={isAboveTheFold}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200"
-                          onError={() => setBrokenImages(prev => ({ ...prev, [temple.slug || index]: true }))}
-                        />
+                            src={imageUrl} 
+                            alt={temple.name || "Temple Illustration"}
+                            width={350}
+                            height={192}
+                            quality={60}
+                            priority={isAboveTheFold}
+                            unoptimized={true} 
+                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200"
+                            onError={() => setBrokenImages(prev => ({ ...prev, [temple.slug || index]: true }))}
+                          />
                         ) : (
                           <div className="flex flex-col items-center justify-center w-full h-full p-4 bg-gray-50 text-center">
                             <span className="text-3xl mb-1 text-[#6E5611]" aria-hidden="true">🏛️</span>
