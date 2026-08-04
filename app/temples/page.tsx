@@ -106,12 +106,11 @@ export default function TemplesPage() {
                           <Image 
                             src={imageUrl} 
                             alt={temple.name || "Temple Illustration"}
-                            width={350}
-                            height={192}
+                            fill
+                            sizes="(max-w-640px) 100vw, (max-w-768px) 50vw, (max-w-1024px) 33vw, 350px"
                             quality={60}
                             priority={isAboveTheFold}
-                            unoptimized={true} 
-                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200"
+                            className="object-cover group-hover:scale-105 transition-transform duration-200"
                             onError={() => setBrokenImages(prev => ({ ...prev, [temple.slug || index]: true }))}
                           />
                         ) : (
