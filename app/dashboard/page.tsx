@@ -108,7 +108,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-zinc-600">Total Logs</p>
-              <h3 className="text-2xl font-bold text-[#1A2530] mt-0.5">{stats.totalEntries}</h3>
+              <h2 className="text-2xl font-bold text-[#1A2530] mt-0.5">{stats.totalEntries}</h2>
             </div>
           </div>
 
@@ -163,7 +163,7 @@ export default function DashboardPage() {
                 <div key={entry._id} className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-serif font-bold text-base text-[#1A2530]">{entry.templeName}</h4>
+                      <h3 className="font-serif font-bold text-base text-[#1A2530]">{entry.templeName}</h3>
                       <span className="text-xs text-zinc-600">{new Date(entry.visitDate).toLocaleDateString(undefined, { dateStyle: 'medium', timeZone: 'UTC' })}</span>
                     </div>
                     <p className="text-sm text-zinc-700 line-clamp-1 max-w-xl">{entry.insights}</p>
