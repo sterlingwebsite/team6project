@@ -107,7 +107,7 @@ export default function TemplesPage() {
                             src={imageUrl} 
                             alt={temple.name || "Temple Illustration"}
                             fill
-                            sizes="(max-w-640px) 100vw, (max-w-768px) 50vw, 300px"
+                            sizes="(max-w-640px) 100vw, (max-w-768px) 50vw, (max-w-1024px) 33vw, 384px"
                             quality={60}
                             priority={isAboveTheFold}
                             className="object-cover group-hover:scale-105 transition-transform duration-200"
