@@ -1,5 +1,6 @@
 // app/api/auth/[...nextauth]/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 import clientPromise from "@/lib/mongodb";
 
 const mockProviders = {
@@ -99,7 +100,7 @@ export async function POST(request: NextRequest) {
         email: email.trim().toLowerCase() 
       });
 
-      if (!user || user.password !== password) {
+      if (!user || !user.password || !(await bcrypt.compare(password, user.password))) {
         return NextResponse.json({ error: "Invalid email or password credentials supplied" }, { status: 401 });
       }
 
