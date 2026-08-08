@@ -1,5 +1,6 @@
 // app/api/auth/register/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 import clientPromise from "@/lib/mongodb";
 
 export async function POST(request: NextRequest) {
@@ -19,10 +20,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "An account with this email address already exists." }, { status: 409 });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const result = await db.collection("users").insertOne({
       name: username.trim(),
       email: normalizedEmail,
-      password: password,
+      password: hashedPassword,
       createdAt: new Date()
     });
 
